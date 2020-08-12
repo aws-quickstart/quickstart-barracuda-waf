@@ -1,5 +1,5 @@
 {
- "AWSTemplateFormatVersion": "2010-09-09",
+  "AWSTemplateFormatVersion": "2010-09-09",
    "Description": "BWAF 10.1 BYOL",
    "Metadata": {
  "AWS::CloudFormation::Interface": {
