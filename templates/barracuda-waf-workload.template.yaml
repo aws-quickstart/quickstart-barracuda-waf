@@ -1,0 +1,589 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: BWAF 10.1 BYOL
+Parameters:
+  EnvironmentName:
+    Description: An environment name that is prefixed to resource names
+    Type: String
+  LicenseBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
+    Description: S3 bucket name for the Quick Start assets. This string can include
+     numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot star or end with a hyphen (-).
+    Type: String
+  CudaLicenseSubDir:
+    Type: String
+    AllowedPattern: "[^\\s]*"
+    Description: 'Specify the folder on the specified License S3 Bucket which contains
+      the BYOL License File. Leave blank if there is no specific folder for Licenses
+      on the S3 Bucket. Examples: Barracuda/Licenses(Two level folder structure),
+      BarracudaBYOLLicenses(One level folder structure).'
+  PrivateSubnet1ACIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/19
+    Description: CIDR block for private subnet 1A located in Availability Zone 1
+    Type: String
+  PrivateSubnet2ACIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.32.0/19
+    Description: CIDR block for private subnet 2A located in Availability Zone 2
+    Type: String
+  AdministratorName:
+    ConstraintDescription: Must be a valid name with 2 - 64 characters.
+    MinLength: '2'
+    MaxLength: '64'
+    Type: String
+  AdministratorEmailID:
+    Type: String
+    AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
+    ConstraintDescription: Must be a valid email address.
+  AdministratorCompany:
+    Default: None
+    Type: String
+    ConstraintDescription: Must be a valid company name with 2 - 64 characters.
+    MinLength: '2'
+    MaxLength: '64'
+    Description: By entering the Name, Email Address and Company (if applicable) above
+      you agree to terms and conditions outlined in the product End User License Agreement
+      (https://www.barracuda.com/legal/software_license_agreement) and Privacy Policy
+      (https://www.barracuda.com/legal/privacy).
+  ScalingMinSize:
+    Description: Enter the minimum number of WAF instances (1-20) to be available
+      in the AutoScale Group
+    Default: '1'
+    ConstraintDescription: Must be a number between 1-20
+    Type: Number
+    MaxValue: '20'
+    MinValue: '1'
+  ScalingMaxSize:
+    Description: Enter the maximum number of WAF instances (2-20) that can be created
+      in the AutoScale Group
+    Default: '4'
+    ConstraintDescription: Must be a number between 2-20.
+    Type: Number
+    MaxValue: '20'
+    MinValue: '2'
+  NotificationEmail:
+    Description: Enter a valid email address to send AutoSclaing Event Notifications
+    Type: String
+    AllowedPattern: "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
+    ConstraintDescription: Must be a valid email address.
+  WAFServiceName:
+    Description: Specify the Service Name to be configured on the Barracuda Web Application
+      Firewall
+    AllowedPattern: "[0-9a-zA-Z-_]*"
+    MinLength: '2'
+    MaxLength: '64'
+    Type: String
+  WAFServicePort:
+    Description: Specify the Service Port to be configured on the Barracuda Web Application
+      Firewall. This the port that is exposed to the outside world. Default is 80.
+    Default: '80'
+    ConstraintDescription: Must be a valid port number (1-65535).
+    Type: Number
+    MaxValue: '65535'
+    MinValue: '1'
+    #WAFServerIP:
+    #Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
+    #  Web Application Firewall; alternatively, you can also enter the FQDN of the
+    #  instance or a downstream ELB to connect to.
+    #ConstraintDescription: Must be a valid IP address or FQDN
+    #MinLength: '7'
+    #MaxLength: '65535'
+    #Type: String
+  AppServerPort:
+    Description: Specify the port number on which the web application responds. This
+      is the port that the Barracuda Web Application Firewall will use to connect
+      to the application
+    ConstraintDescription: Must be a valid port number (1-65535).
+    Type: Number
+    MaxValue: '65535'
+    MinValue: '1'
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Default: quickstart-barracuda-waf/
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  ELBName:
+    Default: elb1
+    Description: Enter a valid pre-configured Elastic Load Balancer name associated
+      to the VPC and Subnet. This is the ELB that will distrubite traffic to the WAF
+      Cluster
+    Type: String
+  WAFInstanceType:
+    Default: m4.large
+    ConstraintDescription: 'Choose from the following EC2 instance types: m4.large, m4.xlarge, m4.2xlarge'
+    Type: String
+    Description: Choose the instance type to use for this AutoScale group
+    AllowedValues:
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+  VPCID:
+    Description: The VPC ID
+    Type: String
+  PublicSubnet1ID:
+    Description: PublicSubnet 1 ID
+    Type: String
+  PublicSubnet2ID:
+    Description: PublicSubnet 2 ID
+    Type: String
+  ElbTargetGroup:
+    Default: elb1-trgt-grp
+    Description: Enter a valid pre-configured Elastic Load Balancer Target Group name associated
+      to the VPC and Subnet.
+    Type: String
+  DefaultDomain:
+    Default: example.com
+    Description: 'Enter the default domain '
+    MinLength: '3'
+    MaxLength: '64'
+    Type: String
+  ProxyServerIP:
+    Description: Enter the IP of your Proxy Server
+    Type: String
+    Default: ''
+  ProxyServerPort:
+    Description: Enter the Port of your Proxy Server
+    Type: String
+    Default: ''
+  ProxyServerUsername:
+    Description: Enter the Username for your Proxy Server. Leave it empty in case
+      you dont have any username for your Proxy Server.
+    Type: String
+    Default: ''
+  ProxyServerPassword:
+    Description: Enter the Password for your Proxy Server. Leave it empty in case
+      you dont have any password for your Proxy Server.
+    Type: String
+    Default: ''
+Mappings:
+  RegionMap:
+    us-east-1:
+      ImageID: ami-0aebcd34f6295e8ae
+    us-east-2:
+      ImageID: ami-0aebcd34f6295e8ae
+    us-west-1:
+      ImageID: ami-34a78f54
+    us-west-2:
+      ImageID: ami-58d03720
+    sa-east-1:
+      ImageID: ami-831167ef
+    ca-central-1:
+      ImageID: ami-65ec5201
+    eu-central-1:
+      ImageID: ami-e277d88d
+    eu-west-1:
+      ImageID: ami-aee91dd7
+    eu-west-2:
+      ImageID: ami-fa27369e
+    ap-southeast-1:
+      ImageID: ami-c662fda5
+    ap-southeast-2:
+      ImageID: ami-ed928c8e
+    ap-northeast-1:
+      ImageID: ami-2221cf44
+    ap-northeast-2:
+      ImageID: ami-a5e33acb
+    ap-south-1:
+      ImageID: ami-29bec546
+  BandwidthScaleUp:
+    medium:
+      bandwidth: '8750000'
+    large:
+      bandwidth: '17500000'
+    xlarge:
+      bandwidth: '35000000'
+    xxlarge:
+      bandwidth: '65630000'
+  BandwidthScaleDown:
+    medium:
+      bandwidth: '8750000'
+    large:
+      bandwidth: '17500000'
+    xlarge:
+      bandwidth: '35000000'
+    xxlarge:
+      bandwidth: '65630000'
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingBYOL: !Not [!Equals [!Ref LicenseBucket, "AWS::NoValue" ]]
+Resources:
+  BWAFAutoScalingS3AccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: BWAFAutoScalingS3AcccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ListBucket
+                Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource:
+                  - !Sub
+                    - arn:${AWS::Partition}:s3:::${Bucket}
+                    - Bucket: Ref ClusterBucket
+                  - !Sub
+                    - arn:${AWS::Partition}:s3:::${Bucket}
+                    - Bucket: Ref BootstrapBucket
+              - Sid: GetObject
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub
+                    - arn:${AWS::Partition}:s3:::${Bucket}/*
+                    - Bucket: Ref ClusterBucket
+                  - !Sub
+                    - arn:${AWS::Partition}:s3:::${Bucket}/*
+                    - Bucket: Ref BootstrapBucket
+        - PolicyName: CloudWatchLogsFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - logs:CreateLogStream
+                  - logs:DescribeLogStreams
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - logs:PutRetentionPolicy
+                Effect: Allow
+                Resource: "*"
+        - PolicyName: aws-quick-start-s3-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - s3:GetObject
+                Resource:
+                  !Sub
+                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                Effect: Allow
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref 'NotificationEmail'
+          Protocol: email
+  AutoScalingS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-autoscaling
+  ClusterBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-cluster
+  BootstrapBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-bootstrap
+  BWAFSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "basic-sg"
+      GroupDescription: "Security group for Barracuda CloudGen WAF"
+      VpcId: !Ref VPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8002
+          ToPort: 8002
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 32575
+          ToPort: 32575
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: udp
+          FromPort: 32576
+          ToPort: 32576
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8443
+          ToPort: 8443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort:
+            Ref: WAFServicePort
+          ToPort:
+            Ref: WAFServicePort
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref PrivateSubnet1ACIDR
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref PrivateSubnet2ACIDR
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: !Ref PrivateSubnet1ACIDR
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: !Ref PrivateSubnet2ACIDR
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: !Ref PrivateSubnet1ACIDR
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: !Ref PrivateSubnet2ACIDR
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref PrivateSubnet1ACIDR
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref PrivateSubnet2ACIDR
+        - IpProtocol: tcp
+          FromPort: 8443
+          ToPort: 8443
+          CidrIp: !Ref PrivateSubnet1ACIDR
+        - IpProtocol: tcp
+          FromPort: 8443
+          ToPort: 8443
+          CidrIp: !Ref PrivateSubnet2ACIDR
+  BWAFAutoScalingInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: BWAFAutoScalingS3AccessRole
+  BWAFAutoScaleLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      InstanceMonitoring: true
+      AssociatePublicIpAddress: true
+      ImageId:
+        Fn::FindInMap:
+          - RegionMap
+          - Ref: AWS::Region
+          - ImageID
+      InstanceType:
+        Ref: WAFInstanceType
+      IamInstanceProfile:
+        Ref: BWAFAutoScalingInstanceProfile
+      SecurityGroups:
+        - Ref: BWAFSecurityGroup
+      UserData:
+        Fn::Base64:
+          !Sub:
+          - |
+            #!/bin/bash
+            /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCid} --type ${InstanceType} --s3ClusterBucket ${ClusterS3Bucket} --s3LicensingBucket ${LicenseS3Bucket}  --s3LicensingFolder ${CudaLicenseSubDir} --config ${Param1}
+
+          - Param1: !Sub '${WAFServiceName}:${WAFServicePort}'
+          #- Param1: !Sub '${WAFServiceName}:${WAFServicePort}:${WAFServerIP}:${WAFServerPort}'
+           # BYOL_Licensing_Options: !If [UsingBYOL, '--licensebucket ${LicenseS3Bucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain}', "AWS::NoValue" ]
+           # Eula_Options: !Sub --signature ${AdministratorName} --organization ${AdministratorCompany} --email ${AdministratorEmailID}
+           # Proxy_Server: !Sub --prx_username ${ProxyServerUsername} --prx_password ${ProxyServerPassword} --prx_server ${ProxyServerIP} --prx_port ${ProxyServerPort}
+  BWAFAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      MinSize:
+        Ref: ScalingMinSize
+      HealthCheckGracePeriod: 1200
+      MaxSize:
+        Ref: ScalingMaxSize
+      VPCZoneIdentifier:
+        - !Ref PublicSubnet1ID
+        - !Ref PublicSubnet2ID
+      LaunchConfigurationName:
+        Ref: BWAFAutoScaleLaunchConfig
+      TargetGroupARNs:
+        - Ref: ElbTargetGroup
+      HealthCheckType: EC2
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        PauseTime: PT10M
+        MaxBatchSize: 1
+        MinInstancesInService:
+          Ref: ScalingMinSize
+  BWAFScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      ScalingAdjustment: 1
+      Cooldown: '300'
+      AutoScalingGroupName:
+        Ref: BWAFAutoScalingGroup
+      AdjustmentType: ChangeInCapacity
+  BWAFScaleDownPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      ScalingAdjustment: -1
+      Cooldown: '300'
+      AutoScalingGroupName:
+        Ref: BWAFAutoScalingGroup
+      AdjustmentType: ChangeInCapacity
+  NetworkInAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            Ref: BWAFAutoScalingGroup
+      AlarmActions:
+        - Ref: BWAFScaleUpPolicy
+      Statistic: Average
+      Threshold: 9175040
+      AlarmDescription: Scale-up if the NetworkIn throughput > 70% of max throughput
+        for 5 minutes
+      Namespace: AWS/EC2
+      Period: 300
+      MetricName: NetworkIn
+  NetworkInAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: 5
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            Ref: BWAFAutoScalingGroup
+      AlarmActions:
+        - Ref: BWAFScaleDownPolicy
+      Statistic: Average
+      Threshold: 5242880
+      AlarmDescription: Scale-down if the NetworkIn throughput < 50% of max throughput
+        for 10 periods of 15 minutes
+      Namespace: AWS/EC2
+      Period: 900
+      MetricName: NetworkIn
+  NetworkOutAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            Ref: BWAFAutoScalingGroup
+      AlarmActions:
+        - Ref: BWAFScaleUpPolicy
+      Statistic: Average
+      Threshold: 9175040
+      AlarmDescription: Scale-up if the NetworkOut throughput > 70% of max throughput
+        for 5 minutes
+      Namespace: AWS/EC2
+      Period: 60
+      MetricName: NetworkOut
+  NetworkOutAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: 5
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            Ref: BWAFAutoScalingGroup
+      AlarmActions:
+        - Ref: BWAFScaleDownPolicy
+      Statistic: Average
+      Threshold: 5242880
+      AlarmDescription: Scale-down if the NetworkOut throughput < 50% of max throughput
+        for 10 periods of 15 minutes
+      Namespace: AWS/EC2
+      Period: 900
+      MetricName: NetworkOut
+  CPUAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            Ref: BWAFAutoScalingGroup
+      AlarmActions:
+        - Ref: BWAFScaleUpPolicy
+      Statistic: Average
+      Threshold: 85
+      AlarmDescription: 'Scale out if WAF CPU > 85% after 5 successive intervals of
+        60 seconds '
+      Namespace: AWS/EC2
+      Period: 60
+      MetricName: CPUUtilization
+  CPUAlarmNormal:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      EvaluationPeriods: 5
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            Ref: BWAFAutoScalingGroup
+      AlarmActions:
+        - Ref: BWAFScaleDownPolicy
+      Statistic: Average
+      Threshold: 60
+      AlarmDescription: Scale in WAF if CPU < 60% for 10 successive intervals of 15
+        minutes
+      Namespace: AWS/EC2
+      Period: 900
+      MetricName: CPUUtilization

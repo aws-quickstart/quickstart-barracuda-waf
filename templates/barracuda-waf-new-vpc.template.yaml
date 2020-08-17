@@ -1,0 +1,372 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This master template deploys 2 Barracuda Cloud Gen WAFs for a multi-AZ, multi-tier
+  deployment. It deploys to an existing VPC behind an ALB. The cluster is configured to use an S3 bucket for storage.   
+  Attention **WARNING** This template creates EC2 instances and related resources. You will be billed for
+  the AWS resources used if you create a stack from this template.
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network configuration
+      Parameters:
+      - AvailabilityZones
+      - VPCCIDR
+      - PrivateSubnet1ACIDR
+      - PrivateSubnet2ACIDR
+      - PublicSubnet1CIDR
+      - PublicSubnet2CIDR
+    - Label:
+        default: Barracuda WAF EC2 configuration
+      Parameters:
+      - KeyPairName
+      - WAFInstanceType
+      - AdministratorName
+      - AdministratorEmailID
+      - AdministratorCompany
+    - Label:
+        default: WAF nodes configuration
+      Parameters:
+      - ScalingMinSize
+      - ScalingMaxSize
+    - Label:
+        default: WAF storage configuration
+      Parameters:
+      - LicenseBucket
+      - CudaLicenseSubDir
+    - Label:
+        default: AWS Quick Start configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3BucketRegion
+      - QSS3KeyPrefix
+    ParameterLabels:
+      AvailabilityZones:
+        default: Availability Zones
+      KeyPairName:
+        default: Key pair name
+      OperatorEmail:
+        default: Operator email
+      PrivateSubnet1ACIDR:
+        default: Private subnet 1 CIDR
+      PrivateSubnet2ACIDR:
+        default: Private subnet 2 CIDR
+      PublicSubnet1CIDR:
+        default: Public subnet 1 CIDR
+      PublicSubnet2CIDR:
+        default: Public subnet 2 CIDR
+      LicenseBucket:
+        default: S3 bucket for WAF Licenses
+      CudaLicenseSubDir:
+        default: The license directory
+      VPCCIDR:
+        default: VPC CIDR
+      WAFInstanceType:
+        default: WAF servers instance type
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket region
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+Parameters:
+  EnvironmentName:
+    Description: An environment name that is prefixed to resource names
+    Type: String
+  LicenseBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
+    Description: S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  CudaLicenseSubDir:
+    Type: String
+    AllowedPattern: "[^\\s]*"
+    Description: 'Specify the folder on the specified License S3 Bucket which contains
+      the BYOL License File. Leave blank if there is no specific folder for Licenses
+      on the S3 Bucket. Examples: Barracuda/Licenses(Two level folder structure),
+      BarracudaBYOLLicenses(One level folder structure).'
+  AvailabilityZones:
+    Description: The list of Availability Zones to use for the subnets in the VPC. Three
+      Availability Zones are used for this deployment, and the logical order of your
+      selections is preserved.
+    Type: List<AWS::EC2::AvailabilityZone::Name>
+  KeyPairName:
+    Description: The name of an existing public/private key pair, which allows you
+      to securely connect to your instance after it launches
+    Type: AWS::EC2::KeyPair::KeyName
+  NumberOfAZs:
+    AllowedValues:
+      - '2'
+    Default: '2'
+    Description: Number of Availability Zones to use in the VPC. This must match your
+      selections in the list of Availability Zones parameter.
+    Type: String
+  PrivateSubnet1ACIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/19
+    Description: CIDR block for private subnet 1A located in Availability Zone 1
+    Type: String
+  PrivateSubnet2ACIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.32.0/19
+    Description: CIDR block for private subnet 2A located in Availability Zone 2
+    Type: String
+  PublicSubnet1CIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.128.0/20
+    Description: CIDR block for the public (DMZ) subnet 1 located in Availability
+      Zone 1
+    Type: String
+  PublicSubnet2CIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.144.0/20
+    Description: The CIDR block for the public (DMZ) subnet 2 located in Availability
+      Zone 2
+    Type: String
+  VPCCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/16
+    Description: CIDR block for the VPC
+    Type: String
+  VPCID:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/16
+    Description: The CIDR block for the VPC
+    Type: String
+  AdministratorName:
+    ConstraintDescription: Must be a valid name with 2 - 64 characters.
+    MinLength: '2'
+    MaxLength: '64'
+    Type: String
+  AdministratorEmailID:
+    Type: String
+    AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
+    ConstraintDescription: Must be a valid email address.
+  AdministratorCompany:
+    Default: None
+    Type: String
+    ConstraintDescription: Must be a valid company name with 2 - 64 characters.
+    MinLength: '2'
+    MaxLength: '64'
+    Description: By entering the Name, Email Address and Company (if applicable) above
+      you agree to terms and conditions outlined in the product End User License Agreement
+      (https://www.barracuda.com/legal/software_license_agreement) and Privacy Policy
+      (https://www.barracuda.com/legal/privacy).
+  ScalingMinSize:
+    Description: Enter the minimum number of WAF instances (1-20) to be available
+      in the AutoScale Group
+    Default: '1'
+    ConstraintDescription: Must be a number between 1-20
+    Type: Number
+    MaxValue: '20'
+    MinValue: '1'
+  ScalingMaxSize:
+    Description: Enter the maximum number of WAF instances (2-20) that can be created
+      in the AutoScale Group
+    Default: '4'
+    ConstraintDescription: Must be a number between 2-20.
+    Type: Number
+    MaxValue: '20'
+    MinValue: '2'
+  NotificationEmail:
+     Description: Enter a valid email address to send AutoSclaing Event Notifications
+     Type: String
+     AllowedPattern: "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
+     ConstraintDescription: Must be a valid email address.
+  WAFServiceName:
+    Description: Specify the Service Name to be configured on the Barracuda Web Application
+      Firewall
+    AllowedPattern: "[0-9a-zA-Z-_]*"
+    MinLength: '2'
+    MaxLength: '64'
+    Type: String
+  WAFServicePort:
+    Description: Specify the Service Port to be configured on the Barracuda Web Application
+      Firewall. This the port that is exposed to the outside world. Default is 80.
+    Default: '80'
+    ConstraintDescription: Must be a valid port number (1-65535).
+    Type: Number
+    MaxValue: '65535'
+    MinValue: '1'
+  #WAFServerIP:
+    #Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
+    #  Web Application Firewall; alternatively, you can also enter the FQDN of the
+    #  instance or a downstream ELB to connect to.
+    #ConstraintDescription: Must be a valid IP address or FQDN
+    #MinLength: '7'
+    #MaxLength: '65535'
+    #Type: String
+  AppServerPort:
+    Description: Specify the port number on which the web application responds. This
+      is the port that the Barracuda Web Application Firewall will use to connect
+      to the application
+    ConstraintDescription: Must be a valid port number (1-65535).
+    Type: Number
+    MaxValue: '65535'
+    MinValue: '1'
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
+      hosted. When using your own bucket, you must specify this value.
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Default: quickstart-barracuda-waf/
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  WAFInstanceType:
+    Default: m4.large
+    ConstraintDescription: 'Choose from the following EC2 instance types: m4.large, m4.xlarge, m4.2xlarge'
+    Type: String
+    Description: Choose the instance type to use for this AutoScale group
+    AllowedValues:
+    - m4.large
+    - m4.xlarge
+    - m4.2xlarge
+  DefaultDomain:
+    Default: example.com
+    Description: 'Enter the default domain '
+    MinLength: '3'
+    MaxLength: '64'
+    Type: String
+  ProxyServerIP:
+    Description: Enter the IP of your Proxy Server
+    Type: String
+    Default: ''
+  ProxyServerPort:
+    Description: Enter the Port of your Proxy Server
+    Type: String
+    Default: ''
+  ProxyServerUsername:
+    Description: Enter the Username for your Proxy Server. Leave it empty in case
+      you dont have any username for your Proxy Server.
+    Type: String
+    Default: ''
+  ProxyServerPassword:
+    Description: Enter the Password for your Proxy Server. Leave it empty in case
+      you dont have any password for your Proxy Server.
+    Type: String
+    Default: ''
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
+        KeyPairName: !Ref 'KeyPairName'
+        NumberOfAZs: !Ref 'NumberOfAZs'
+        PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1ACIDR'
+        PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2ACIDR'
+        PrivateSubnetATag1: "Name=barracuda-private-subnet-az1"
+        PrivateSubnetATag2: "Name=barracuda-private-subnet-az2"
+        PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
+        PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
+        PublicSubnetTag1: "Name=barracuda-public-subnet-az1"
+        PublicSubnetTag2: "Name=barracuda-public-subnet-az2"
+        CreateNATGateways: 'false'
+        VPCCIDR: !Ref 'VPCCIDR'
+  WAFStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/barracuda-waf-workload.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        EnvironmentName: !Ref EnvironmentName
+        WAFServiceName: !Ref WAFServiceName
+        VPCID: !GetAtt VPCStack.Outputs.VPCID
+        PrivateSubnet1ACIDR: !GetAtt VPCStack.Outputs.PrivateSubnet1ACIDR
+        PrivateSubnet2ACIDR: !GetAtt VPCStack.Outputs.PrivateSubnet2ACIDR
+        PublicSubnet1ID: !GetAtt VPCStack.Outputs.PublicSubnet1ID
+        PublicSubnet2ID: !GetAtt VPCStack.Outputs.PublicSubnet2ID
+        AppServerPort: !Ref AppServerPort
+        AdministratorEmailID: !Ref AdministratorEmailID
+        AdministratorName: !Ref AdministratorName
+        ELBName: !GetAtt ELB.DNSName
+        ElbTargetGroup: !Ref ElbTargetGroup
+        NotificationEmail: !Ref NotificationEmail
+        DefaultDomain: !Ref DefaultDomain
+        ProxyServerIP: !Ref ProxyServerIP
+        ProxyServerPort: !Ref ProxyServerPort
+        ProxyServerUsername: !Ref ProxyServerUsername
+        ProxyServerPassword: !Ref ProxyServerPassword
+        WAFServicePort: !Ref WAFServicePort
+        WAFInstanceType: !Ref WAFInstanceType
+        ScalingMinSize: !Ref ScalingMinSize
+        ScalingMaxSize: !Ref ScalingMaxSize
+        AdministratorCompany: !Ref AdministratorCompany
+  ElbTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub "${WAFServiceName}-ELB-TG"
+      HealthCheckEnabled: True
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: "/index.html"
+      HealthCheckPort: "8080"
+      HealthCheckProtocol: "HTTP"
+      #HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 3
+      TargetType: instance
+      VpcId: !GetAtt VPCStack.Outputs.VPCID
+      Port: 80
+      Protocol: TCP
+      Tags:
+        - Key: "Name"
+          Value: !Join
+            - '-'
+            - - !Ref WAFServiceName
+              - !Ref EnvironmentName
+              - "ELB-TG"
+  ELB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub ${WAFServiceName}-LB
+      IpAddressType: ipv4
+      Type: network
+      Subnets:
+        - !GetAtt VPCStack.Outputs.PublicSubnet1ID
+        - !GetAtt VPCStack.Outputs.PublicSubnet2ID
+      Scheme: internet-facing ##internal <<- is other option
+      #LoadBalancerAttributes:
+      #- LoadBalancerAttributes
+      Tags:
+        - Key: Name
+          Value: !Sub "${EnvironmentName}-${WAFServiceName}-LB"
+  ElbHttpListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      LoadBalancerArn: !Ref ELB
+      Port: 80
+      Protocol: TCP
+      DefaultActions:
+        - TargetGroupArn: !Ref ElbTargetGroup
+          Type: forward

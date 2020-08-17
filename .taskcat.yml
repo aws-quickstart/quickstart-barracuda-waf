@@ -29,7 +29,10 @@ tests:
       AdministratorEmailID: override
       WAFServiceName: $[taskcat_random-string]
       AppServerPort: 1110
+      NotificationEmail: override
+      LicenseBucket: quickstart-ci-license-hpsy07p5rzf3hcrn
+      CudaLicenseSubDir: barracuda
     regions:
     - us-east-1
     s3_bucket: ''
-    template: templates/barracuda-waf-master.template.yaml
+    template: templates/barracuda-waf-new-vpc.template.yaml
