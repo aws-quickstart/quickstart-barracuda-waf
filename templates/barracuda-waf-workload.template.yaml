@@ -431,16 +431,33 @@ Resources:
         - Ref: BWAFSecurityGroup
       UserData:
         Fn::Base64:
-          !Sub:
-          - |
-            #!/bin/bash
-            /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCid} --type ${InstanceType} --s3ClusterBucket ${ClusterS3Bucket} --s3LicensingBucket ${LicenseS3Bucket}  --s3LicensingFolder ${CudaLicenseSubDir} --config ${Param1}
-
-          - Param1: !Sub '${WAFServiceName}:${WAFServicePort}'
-          #- Param1: !Sub '${WAFServiceName}:${WAFServicePort}:${WAFServerIP}:${WAFServerPort}'
-           # BYOL_Licensing_Options: !If [UsingBYOL, '--licensebucket ${LicenseS3Bucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain}', "AWS::NoValue" ]
-           # Eula_Options: !Sub --signature ${AdministratorName} --organization ${AdministratorCompany} --email ${AdministratorEmailID}
-           # Proxy_Server: !Sub --prx_username ${ProxyServerUsername} --prx_password ${ProxyServerPassword} --prx_server ${ProxyServerIP} --prx_port ${ProxyServerPort}
+          Fn::Join:
+            - ""
+            - - "#!/bin/bash\n"
+              - "/opt/aws/bwaf/aws_autoscale.pl --command init-config"
+              - " --stack "
+              - Ref: AWS::StackName
+              - " --resource BWAFAutoScaleLaunchConfig "
+              - " --region "
+              - Ref: AWS::Region
+              - " --s3bucketname "
+              - Ref: AutoScalingS3Bucket
+              - " --config "
+              - Fn::Join:
+                  - ":"
+                  - - Ref: WAFServiceName
+                    - Ref: WAFServicePort
+                    - !Ref ELBName
+                    - Ref: AppServerPort
+              - "\n\n"
+              - 'Eula Options: '
+              - " --signature "
+              - Ref: AdministratorName
+              - " --organization "
+              - Ref: AdministratorCompany
+              - " --email "
+              - Ref: AdministratorEmailID
+              - "\n"
   BWAFAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:

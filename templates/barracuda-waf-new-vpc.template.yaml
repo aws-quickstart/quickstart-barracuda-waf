@@ -323,6 +323,8 @@ Resources:
         ScalingMinSize: !Ref ScalingMinSize
         ScalingMaxSize: !Ref ScalingMaxSize
         AdministratorCompany: !Ref AdministratorCompany
+        LicenseBucket: !Ref LicenseBucket
+        CudaLicenseSubDir: !Ref CudaLicenseSubDir
   ElbTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:

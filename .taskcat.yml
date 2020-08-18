@@ -31,7 +31,7 @@ tests:
       AppServerPort: 1110
       NotificationEmail: override
       LicenseBucket: quickstart-ci-license-hpsy07p5rzf3hcrn
-      CudaLicenseSubDir: barracuda
+      CudaLicenseSubDir: barracuda/
     regions:
     - us-east-1
     s3_bucket: ''
