@@ -17,6 +17,10 @@ Parameters:
       the BYOL License File. Leave blank if there is no specific folder for Licenses
       on the S3 Bucket. Examples: Barracuda/Licenses(Two level folder structure),
       BarracudaBYOLLicenses(One level folder structure).'
+  KeyPairName:
+    Description: The name of an existing public/private key pair, which allows you
+      to securely connect to your instance after it launches
+    Type: AWS::EC2::KeyPair::KeyName
   PrivateSubnet1ACIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
@@ -418,6 +422,7 @@ Resources:
     Properties:
       InstanceMonitoring: true
       AssociatePublicIpAddress: true
+      KeyName: !Ref KeyPairName
       ImageId:
         Fn::FindInMap:
           - RegionMap
