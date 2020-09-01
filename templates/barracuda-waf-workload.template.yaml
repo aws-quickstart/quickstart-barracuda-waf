@@ -17,12 +17,26 @@ Parameters:
       the BYOL License File. Leave blank if there is no specific folder for Licenses
       on the S3 Bucket. Examples: Barracuda/Licenses(Two level folder structure),
       BarracudaBYOLLicenses(One level folder structure).'
+  CudaBackupSubDir:
+    Type: String
+    AllowedPattern: '[^\s]*'
+    Description: 'Specify the folder on the specified Bootstrapping S3 Bucket which
+        contains the Backup File. Leave blank if there is no specific folder for Backups
+        on the S3 Bucket. Examples: Barracuda/WAFBackups(Two level folder structure),
+        BarracudaWAFBackup(One level folder structure).'
+    Default: ''
+  BackupFileName:
+    Type: String
+    Description: Backup filename which needs to be restored on WAF when it boots up. Ex. BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak
+    Default: ''
+  BootstrappingS3Bucket:
+    Type: String
+    Description: S3 Bucket which has the backups in it.
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
     Type: AWS::EC2::KeyPair::KeyName
   PrivateSubnet1ACIDR:
-    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.0.0/19
     Description: CIDR block for private subnet 1A located in Availability Zone 1
@@ -88,14 +102,6 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
-    #WAFServerIP:
-    #Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
-    #  Web Application Firewall; alternatively, you can also enter the FQDN of the
-    #  instance or a downstream ELB to connect to.
-    #ConstraintDescription: Must be a valid IP address or FQDN
-    #MinLength: '7'
-    #MaxLength: '65535'
-    #Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect
@@ -176,6 +182,13 @@ Parameters:
       you dont have any password for your Proxy Server.
     Type: String
     Default: ''
+  WAFLicenseModel:
+    Description: Select the proper licensing type for your deployment. The options are "Bring Your Own License (BYOL)" or "Pay as You Go (PAYG)". The default is BYOL.
+    Type: String
+    AllowedValues:
+      - 'BYOL'
+      - 'PAYG'
+    Default: 'BYOL'
 Mappings:
   RegionMap:
     us-east-1:
@@ -227,6 +240,7 @@ Mappings:
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   UsingBYOL: !Not [!Equals [!Ref LicenseBucket, "AWS::NoValue" ]]
+  PAYGSelected: !Equals [!Ref WAFLicenseModel, 'PAYG']
 Resources:
   BWAFAutoScalingS3AccessRole:
     Type: AWS::IAM::Role
@@ -411,6 +425,18 @@ Resources:
           FromPort: 8443
           ToPort: 8443
           CidrIp: !Ref PrivateSubnet2ACIDR
+        - IpProtocol: tcp
+          FromPort:
+            Ref: AppServerPort
+          ToPort:
+            Ref: AppServerPort
+          CidrIp: !Ref PrivateSubnet1ACIDR
+        - IpProtocol: tcp
+          FromPort:
+            Ref: AppServerPort
+          ToPort:
+            Ref: AppServerPort
+          CidrIp: !Ref PrivateSubnet2ACIDR
   BWAFAutoScalingInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -419,6 +445,8 @@ Resources:
         - Ref: BWAFAutoScalingS3AccessRole
   BWAFAutoScaleLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      cfn-lint: { config: { ignore_checks: [ E1019 ] } }
     Properties:
       InstanceMonitoring: true
       AssociatePublicIpAddress: true
@@ -436,33 +464,24 @@ Resources:
         - Ref: BWAFSecurityGroup
       UserData:
         Fn::Base64:
-          Fn::Join:
-            - ""
-            - - "#!/bin/bash\n"
-              - "/opt/aws/bwaf/aws_autoscale.pl --command init-config"
-              - " --stack "
-              - Ref: AWS::StackName
-              - " --resource BWAFAutoScaleLaunchConfig "
-              - " --region "
-              - Ref: AWS::Region
-              - " --s3bucketname "
-              - Ref: AutoScalingS3Bucket
-              - " --config "
-              - Fn::Join:
-                  - ":"
-                  - - Ref: WAFServiceName
-                    - Ref: WAFServicePort
-                    - !Ref ELBName
-                    - Ref: AppServerPort
-              - "\n\n"
-              - 'Eula Options: '
-              - " --signature "
-              - Ref: AdministratorName
-              - " --organization "
-              - Ref: AdministratorCompany
-              - " --email "
-              - Ref: AdministratorEmailID
-              - "\n"
+          !Sub
+          - |
+            #!/bin/bash
+            if [[ ${WAFLicenseModel} = PAYG ]]
+               	then
+               	if [[ -n ${BackupFileName} ]]
+               		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:$WAFServerIP:${AppServerPort}
+               	else
+               		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --enableRestoreBackup --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --s3LicensingBucket ${LicenseBucket} --s3LicensingFolder ${CudaLicenseSubDir} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
+            	fi
+               else
+               	if [[ -n ${BackupFileName} ]]
+               		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --config ${WAFServiceName}:${WAFServicePort}:${WAFServerIP}:${AppServerPort}
+            	else
+            		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
+              		fi
+               fi
+          - WAFServerIP: curl http://169.254.169.254/latest/meta-data/local-ipv4
   BWAFAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:

@@ -51,6 +51,12 @@ Metadata:
       - QSS3BucketName
       - QSS3BucketRegion
       - QSS3KeyPrefix
+    - Label:
+        default: WAF Backup Config File Location. Only needed if using a backup for new configuration of the WAF.
+        Parameters:
+          - CudaBackupSubDir
+          - BootstrappingS3Bucket
+          - BackupFileName
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -84,6 +90,12 @@ Metadata:
         default: S3 bucket for WAF Licenses
       CudaLicenseSubDir:
         default: The license directory
+      BootstrappingS3Bucket:
+        default: Bootstrapping S3 Bucket
+      CudaBackupSubDir:
+        default: Bootstrapping Sub Directory
+      BackupFileName:
+        default: Backup File Name
       VPCCIDR:
         default: VPC CIDR
       WAFInstanceType:
@@ -116,6 +128,22 @@ Parameters:
       the BYOL License File. Leave blank if there is no specific folder for Licenses
       on the S3 Bucket. Examples: Barracuda/Licenses(Two level folder structure),
       BarracudaBYOLLicenses(One level folder structure).'
+  CudaBackupSubDir:
+    Type: String
+    AllowedPattern: '[^\s]*'
+    Description: 'Specify the folder on the specified Bootstrapping S3 Bucket which
+          contains the Backup File. Leave blank if there is no specific folder for Backups
+          on the S3 Bucket. Examples: Barracuda/WAFBackups(Two level folder structure),
+          BarracudaWAFBackup(One level folder structure).'
+    Default: ''
+  BackupFileName:
+    Type: String
+    Description: Backup filename which needs to be restored on WAF when it boots up. Ex. BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak
+    Default: ''
+  BootstrappingS3Bucket:
+    Type: String
+    Description: S3 Bucket which has the backups in it.
+    Default: ''
   AvailabilityZones:
     Description: The list of Availability Zones to use for the subnets in the VPC. Three
       Availability Zones are used for this deployment, and the logical order of your
@@ -225,14 +253,6 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
-  #WAFServerIP:
-    #Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
-    #  Web Application Firewall; alternatively, you can also enter the FQDN of the
-    #  instance or a downstream ELB to connect to.
-    #ConstraintDescription: Must be a valid IP address or FQDN
-    #MinLength: '7'
-    #MaxLength: '65535'
-    #Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect
@@ -298,8 +318,16 @@ Parameters:
       you dont have any password for your Proxy Server.
     Type: String
     Default: ''
+  WAFLicenseModel:
+    Description: Select the proper licensing type for your deployment. The options are "Bring Your Own License (BYOL)" or "Pay as You Go (PAYG)". The default is BYOL.
+    Type: String
+    AllowedValues:
+      - 'BYOL'
+      - 'PAYG'
+    Default: 'BYOL'
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingWAFBackups: !Not [!Equals [!Ref BackupFileName, "AWS::NoValue"]]
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
@@ -356,6 +384,10 @@ Resources:
         AdministratorCompany: !Ref AdministratorCompany
         LicenseBucket: !Ref LicenseBucket
         CudaLicenseSubDir: !Ref CudaLicenseSubDir
+        WAFLicenseModel: !Ref WAFLicenseModel
+        CudaBackupSubDir: !If [ UsingWAFBackups, !Ref CudaBackupSubDir, "AWS::NoValue" ]
+        BackupFileName: !If [ UsingWAFBackups, !Ref BackupFileName, "AWS::NoValue" ]
+        BootstrappingS3Bucket: !If [ UsingWAFBackups, !Ref BootstrappingS3Bucket, "AWS::NoValue" ]
   ElbTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
