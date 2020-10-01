@@ -3,61 +3,64 @@ Description: This master template deploys 2 Barracuda Cloud Gen WAFs for a multi
   deployment. It deploys to an existing VPC behind an ALB. The cluster is configured to use an S3 bucket for storage.   
   Attention **WARNING** This template creates EC2 instances and related resources. You will be billed for
   the AWS resources used if you create a stack from this template.
-Metadata:
-  AWS::CloudFormation::Interface:
-    ParameterGroups:
-    - Label:
-        default: Network configuration
-      Parameters:
-      - AvailabilityZones
-      - VPCCIDR
-      - PrivateSubnet1ACIDR
-      - PrivateSubnet2ACIDR
-      - PublicSubnet1CIDR
-      - PublicSubnet2CIDR
-    - Label:
-        default: Barracuda WAF EC2 configuration
-      Parameters:
-      - KeyPairName
-      - WAFInstanceType
-      - WAFServiceName
-      - WAFServicePort
-      - AdministratorName
-      - AdministratorEmailID
-      - AdministratorCompany
-      - NotificationEmail
-    - Label:
-        default: Misc configuration
-      Parameters:
-      - AppServerPort
-      - DefaultDomain
-      - ProxyServerIP
-      - ProxyServerPort
-      - ProxyServerUsername
-      - ProxyServerPassword
-    - Label:
-        default: WAF nodes configuration
-      Parameters:
-      - ScalingMinSize
-      - ScalingMaxSize
-    - Label:
-        default: WAF storage configuration
-      Parameters:
-      - LicenseBucket
-      - CudaLicenseSubDir
-    - Label:
-        default: AWS Quick Start configuration
-      Parameters:
-      - QSS3BucketName
-      - QSS3BucketRegion
-      - QSS3KeyPrefix
-    - Label:
-        default: WAF Backup Config File Location. Only needed if using a backup for new configuration of the WAF.
+Metadata: 
+  AWS::CloudFormation::Interface: 
+    ParameterGroups: 
+      - Label: 
+          default: "VPC Configuration"
         Parameters:
+          - AvailabilityZones 
+          - VPCCIDR
+          - PrivateSubnet1ACIDR
+          - PrivateSubnet2ACIDR
+          - PublicSubnet1CIDR
+          - PublicSubnet2CIDR
+          - ELBName
+          - ElbTargetGroup
+      - Label: 
+          default: "WAF Configuration"
+        Parameters: 
+          - WAFInstanceType
+          - KeyPairName
+          - WAFServiceName
+          - WAFServicePort
+          - AppServerPort
+          - DefaultDomain
+          - ScalingMinSize
+          - ScalingMaxSize
+          - EnvironmentName
+          - WAFLicenseModel
+      - Label: 
+          default: "Admin Configuration"
+        Parameters: 
+          - AdministratorName
+          - AdministratorEmailID
+          - AdministratorCompany
+          - NotificationEmail
+      - Label:
+          default: WAF storage configuration
+        Parameters:
+          - LicenseBucket
+          - CudaLicenseSubDir
           - CudaBackupSubDir
           - BootstrappingS3Bucket
           - BackupFileName
-    ParameterLabels:
+      - Label:
+          default: AWS Quick Start configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
+      - Label: 
+          default: "Proxy Configuration"
+        Parameters: 
+          - ProxyServerIP
+          - ProxyServerPort
+          - ProxyServerUsername
+          - ProxyServerPassword
+    ParameterLabels: 
+      VPCID: 
+        default: "Which VPC should this be deployed to?"
       AvailabilityZones:
         default: Availability Zones
       KeyPairName:
@@ -236,7 +239,7 @@ Parameters:
   NotificationEmail:
      Description: Enter a valid email address to send AutoSclaing Event Notifications
      Type: String
-     AllowedPattern: "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
+     AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
      ConstraintDescription: Must be a valid email address.
   WAFServiceName:
     Description: Specify the Service Name to be configured on the Barracuda Web Application
