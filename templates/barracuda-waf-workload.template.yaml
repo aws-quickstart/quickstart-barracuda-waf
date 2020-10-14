@@ -4,6 +4,7 @@ Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
     Type: String
+    AllowedPattern: "[0-9a-z-]*"
   LicenseBucket:
     AllowedPattern: ^$|^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
@@ -94,7 +95,7 @@ Parameters:
   WAFServiceName:
     Description: Specify the Service Name to be configured on the Barracuda Web Application
       Firewall
-    AllowedPattern: "[0-9a-zA-Z-_]*"
+    AllowedPattern: "[0-9a-z-]*"
     MinLength: '2'
     MaxLength: '64'
     Type: String
