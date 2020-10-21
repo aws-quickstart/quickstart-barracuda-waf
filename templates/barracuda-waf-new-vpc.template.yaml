@@ -25,6 +25,7 @@ Metadata:
           - WAFServiceName
           - WAFServicePort
           - AppServerPort
+          - AppServerIP
           - DefaultDomain
           - ScalingMinSize
           - ScalingMaxSize
@@ -113,15 +114,17 @@ Metadata:
         default: Email for notifications
       AppServerPort:
         default: Application server port
+      AppServerIP:
+        default: Application server IP
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
     Type: String
   LicenseBucket:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    AllowedPattern: "[0-9a-z-]*"
     ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
     Description: S3 bucket name for the Quick Start assets. This string can include
-      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      numbers, lowercase letters, and hyphens (-). It cannot start
       or end with a hyphen (-).
     Type: String
   CudaLicenseSubDir:
@@ -157,8 +160,7 @@ Parameters:
       to securely connect to your instance after it launches
     Type: AWS::EC2::KeyPair::KeyName
   NumberOfAZs:
-    AllowedValues:
-      - '2'
+    AllowedPattern: '[1-4]'
     Default: '2'
     Description: Number of Availability Zones to use in the VPC. This must match your
       selections in the list of Availability Zones parameter.
@@ -250,6 +252,12 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
+  AppServerIP:
+    Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
+      Web Application Firewall; alternatively, you can also enter the FQDN of the
+      instance or a downstream ELB to connect to.
+    ConstraintDescription: Must be a valid IP address or FQDN
+    Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect
@@ -259,10 +267,8 @@ Parameters:
     MaxValue: '65535'
     MinValue: '1'
   QSS3BucketName:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
-      (-).
+    AllowedPattern: ^[0-9a-z]+([0-9a-z-]*[0-9a-z])*$
+    ConstraintDescription: The name of the bukcet where the qucikstart files are stored
     Default: aws-quickstart
     Description: S3 bucket name for the Quick Start assets. This string can include
       numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
@@ -364,6 +370,7 @@ Resources:
         PublicSubnet1ID: !GetAtt VPCStack.Outputs.PublicSubnet1ID
         PublicSubnet2ID: !GetAtt VPCStack.Outputs.PublicSubnet2ID
         AppServerPort: !Ref AppServerPort
+        AppServerIP: !Ref AppServerIP
         AdministratorEmailID: !Ref AdministratorEmailID
         AdministratorName: !Ref AdministratorName
         ELBName: !GetAtt ELB.DNSName
