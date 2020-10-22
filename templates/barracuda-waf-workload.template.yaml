@@ -2,14 +2,15 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: BWAF 10.1 BYOL
 Parameters:
   EnvironmentName:
-    Description: An environment name that is prefixed to resource names
+    Description: An environment name that is prefixed to resource names. This string can include
+     numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-)
     Type: String
     AllowedPattern: "[0-9a-z-]*"
   LicenseBucket:
-    AllowedPattern: ^$|^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    AllowedPattern: '[0-9a-z-]*' #^$|^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
     Description: S3 bucket name for the Quick Start assets. This string can include
-     numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
+     numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
     Type: String
     Default: ''
   CudaLicenseSubDir:
@@ -94,8 +95,8 @@ Parameters:
     ConstraintDescription: Must be a valid email address.
   WAFServiceName:
     Description: Specify the Service Name to be configured on the Barracuda Web Application
-      Firewall
-    AllowedPattern: "[0-9a-z-]*"
+      Firewall. This string can include numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-)
+    AllowedPattern: "^$|[0-9a-z-]*"
     MinLength: '2'
     MaxLength: '64'
     Type: String
@@ -107,6 +108,12 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
+  AppServerIP:
+    Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
+      Web Application Firewall; alternatively, you can also enter the FQDN of the
+      instance or a downstream ELB to connect to.
+    ConstraintDescription: Must be a valid IP address or FQDN
+    Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect
@@ -116,9 +123,9 @@ Parameters:
     MaxValue: '65535'
     MinValue: '1'
   QSS3BucketName:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    AllowedPattern: "^$|[0-9a-z-]*"  #^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
     Default: aws-quickstart
     Description: S3 bucket name for the Quick Start assets. This string can include
@@ -283,10 +290,10 @@ Resources:
                 Resource:
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}
-                    - Bucket: Ref ClusterBucket
+                    - Bucket: !Ref ClusterBucket
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}
-                    - Bucket: Ref BootstrapBucket
+                    - Bucket: !Ref BootstrapBucket
               - Sid: GetObject
                 Effect: Allow
                 Action:
@@ -296,10 +303,10 @@ Resources:
                 Resource:
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}/*
-                    - Bucket: Ref ClusterBucket
+                    - Bucket: !Ref ClusterBucket
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}/*
-                    - Bucket: Ref BootstrapBucket
+                    - Bucket: !Ref BootstrapBucket
         - PolicyName: CloudWatchLogsFullAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -483,18 +490,24 @@ Resources:
           !Sub
           - |
             #!/bin/bash
-            if [[ ${WAFLicenseModel} = PAYG ]]
-              if [[ -n ${BackupFileName} ]]
-                !Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:$WAFServerIP:${AppServerPort}
+            if [[ "${WAFLicenseModel}" == "PAYG" ]]; then
+              if [[ -n "${BackupFileName}" ]]; then
+                echo "<<PAYG with backup>>" > /home/remote/userdata.log
+                echo "--stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}" >> /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}
               else
-                !Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --enableRestoreBackup --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --s3LicensingBucket ${LicenseBucket} --s3LicensingFolder ${CudaLicenseSubDir} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
+                echo "<<PAYG, no backup>>" > /home/remote/userdata.log
+                echo "--stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}" >> /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --enableRestoreBackup --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --s3LicensingBucket ${LicenseBucket} --s3LicensingFolder ${CudaLicenseSubDir} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
               fi
             else
-              if [[ -n ${BackupFileName} ]]
-                !Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --config ${WAFServiceName}:${WAFServicePort}:${WAFServerIP}:${AppServerPort}
-                else
-                  !Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
-                fi
+              if [[ -n "${BackupFileName}" ]]; then
+                echo "<<BYOL with backup>>" > /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}
+              else
+                echo "<<BYOL, no backup>>" > /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
+              fi
             fi
           - WAFServerIP: curl http://169.254.169.254/latest/meta-data/local-ipv4
   BWAFAutoScalingGroup:
