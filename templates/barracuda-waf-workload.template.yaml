@@ -5,7 +5,7 @@ Parameters:
     Description: An environment name that is prefixed to resource names. This string can include
      numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-)
     Type: String
-    AllowedPattern: '^$|[0-9a-z-]*'
+    AllowedPattern: "[0-9a-z-]*"
   LicenseBucket:
     AllowedPattern: '[0-9a-z-]*' #^$|^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
