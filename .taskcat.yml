@@ -35,4 +35,4 @@ tests:
     regions:
     - us-east-1
     s3_bucket: ''
-    template: templates/barracuda-waf-new-vpc.template.yaml
+    template: templates/barracuda-waf-entrypoint-new-vpc.template.yaml
