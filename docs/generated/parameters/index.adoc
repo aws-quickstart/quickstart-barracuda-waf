@@ -1,0 +1,6 @@
+
+=== Launch into a new VPC
+include::barracuda-waf-new-vpc.template.adoc[]
+
+=== Launch into a existing VPC
+include::barracuda-waf-existing-vpc.template.adoc[]

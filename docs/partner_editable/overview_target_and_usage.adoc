@@ -1,0 +1,18 @@
+// Replace the content in <>
+// Identify your target audience and explain how/why they would use this Quick Start.
+//Avoid borrowing text from third-party websites (copying text from AWS service documentation is fine). Also, avoid marketing-speak, focusing instead on the technical aspect.
+
+This guide provides instructions for deploying the {partner-product-short-name} Quick Start reference architecture on the AWS Cloud.
+
+This Quick Start is for users who use WAFs to protect applications
+hosted in AWS. Typically, organizations deploy the Barracuda WAF to
+protect web-facing applications they are either deploying in or
+migrating to AWS. The Barracuda WAF is designed to offer a
+highly-configurable set of controls, enabling easier migration and
+security for formerly on-premises workloads now deployed in AWS. It
+operates as a Reverse Proxy, inspecting traffic in both directions, so
+it also provides Data Loss Prevention features.
+
+Please know that we may share who uses AWS Quick Starts with the AWS
+Partner Network (APN) Partner that collaborated with AWS on the content
+of the Quick Start.

@@ -2,14 +2,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: BWAF 10.1 BYOL
 Parameters:
   EnvironmentName:
-    Description: An environment name that is prefixed to resource names
+    Description: An environment name that is prefixed to resource names. This string can include
+     numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-)
     Type: String
+    AllowedPattern: "[0-9a-z-]*"
   LicenseBucket:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    AllowedPattern: '[0-9a-z-]*' #^$|^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
     Description: S3 bucket name for the Quick Start assets. This string can include
-     numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot star or end with a hyphen (-).
+     numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
     Type: String
+    Default: ''
   CudaLicenseSubDir:
     Type: String
     AllowedPattern: "[^\\s]*"
@@ -36,6 +39,9 @@ Parameters:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
     Type: AWS::EC2::KeyPair::KeyName
+  VPCID:
+    Type: "AWS::EC2::VPC::Id"
+    Description: The ID of your existing VPC (e.g., vpc-0343606e)
   PrivateSubnet1ACIDR:
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.0.0/19
@@ -85,12 +91,12 @@ Parameters:
   NotificationEmail:
     Description: Enter a valid email address to send AutoSclaing Event Notifications
     Type: String
-    AllowedPattern: "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
+    AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
     ConstraintDescription: Must be a valid email address.
   WAFServiceName:
     Description: Specify the Service Name to be configured on the Barracuda Web Application
-      Firewall
-    AllowedPattern: "[0-9a-zA-Z-_]*"
+      Firewall. This string can include numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-)
+    AllowedPattern: "^$|[0-9a-z-]*"
     MinLength: '2'
     MaxLength: '64'
     Type: String
@@ -102,6 +108,12 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
+  AppServerIP:
+    Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
+      Web Application Firewall; alternatively, you can also enter the FQDN of the
+      instance or a downstream ELB to connect to.
+    ConstraintDescription: Must be a valid IP address or FQDN
+    Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect
@@ -111,9 +123,9 @@ Parameters:
     MaxValue: '65535'
     MinValue: '1'
   QSS3BucketName:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    AllowedPattern: "^$|[0-9a-z-]*"  #^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
     Default: aws-quickstart
     Description: S3 bucket name for the Quick Start assets. This string can include
@@ -144,9 +156,6 @@ Parameters:
       - m4.large
       - m4.xlarge
       - m4.2xlarge
-  VPCID:
-    Description: The VPC ID
-    Type: String
   PublicSubnet1ID:
     Description: PublicSubnet 1 ID
     Type: String
@@ -192,33 +201,47 @@ Parameters:
 Mappings:
   RegionMap:
     us-east-1:
-      ImageID: ami-0aebcd34f6295e8ae
+      PAYG: ami-04f0a227aebdc7f98
+      BYOL: ami-03fe3d14505dfefdc
     us-east-2:
-      ImageID: ami-0aebcd34f6295e8ae
+      PAYG: ami-0fd76f5222cdf861b
+      BYOL: ami-0db89527496f6a87c
     us-west-1:
-      ImageID: ami-34a78f54
+      PAYG: ami-0093cec155775c3d5
+      BYOL: ami-0905e9dc8bb4b91c3
     us-west-2:
-      ImageID: ami-58d03720
+      PAYG: ami-0632b7e34009e52b7
+      BYOL: ami-070c2823862ff8ea8
     sa-east-1:
-      ImageID: ami-831167ef
+      PAYG: ami-0fe8befbac70769dd
+      BYOL: ami-0d589d10080d50f15
     ca-central-1:
-      ImageID: ami-65ec5201
+      PAYG: ami-07da3622b4219a52c
+      BYOL: ami-0bbc0d3b5501bb030
     eu-central-1:
-      ImageID: ami-e277d88d
+      PAYG: ami-06d9354e07474133c
+      BYOL: ami-02c48ef8defdf0379
     eu-west-1:
-      ImageID: ami-aee91dd7
+      PAYG: ami-08baefd8fc513db66
+      BYOL: ami-0bdc3bc93d8d4d6e2
     eu-west-2:
-      ImageID: ami-fa27369e
+      PAYG: ami-0dfdd307c88981449
+      BYOL: ami-0262b6949aa7f1529
     ap-southeast-1:
-      ImageID: ami-c662fda5
+      PAYG: ami-04dcc1951b653ef8f
+      BYOL: ami-0b7e14f3f77f1f55b
     ap-southeast-2:
-      ImageID: ami-ed928c8e
+      PAYG: ami-05d3bf5b984cf2b4d
+      BYOL: ami-01dcf361a2d252a63
     ap-northeast-1:
-      ImageID: ami-2221cf44
+      PAYG: ami-0b2638d032763db7c
+      BYOL: ami-040482863065d9111
     ap-northeast-2:
-      ImageID: ami-a5e33acb
+      PAYG: ami-091252a4458758104
+      BYOL: ami-0121574171fcb226a
     ap-south-1:
-      ImageID: ami-29bec546
+      PAYG: ami-077e000c1003592b6
+      BYOL: ami-0e458de57cabe8f84
   BandwidthScaleUp:
     medium:
       bandwidth: '8750000'
@@ -267,10 +290,10 @@ Resources:
                 Resource:
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}
-                    - Bucket: Ref ClusterBucket
+                    - Bucket: !Ref ClusterBucket
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}
-                    - Bucket: Ref BootstrapBucket
+                    - Bucket: !Ref BootstrapBucket
               - Sid: GetObject
                 Effect: Allow
                 Action:
@@ -280,10 +303,10 @@ Resources:
                 Resource:
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}/*
-                    - Bucket: Ref ClusterBucket
+                    - Bucket: !Ref ClusterBucket
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}/*
-                    - Bucket: Ref BootstrapBucket
+                    - Bucket: !Ref BootstrapBucket
         - PolicyName: CloudWatchLogsFullAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -455,7 +478,7 @@ Resources:
         Fn::FindInMap:
           - RegionMap
           - Ref: AWS::Region
-          - ImageID
+          - Ref: WAFLicenseModel
       InstanceType:
         Ref: WAFInstanceType
       IamInstanceProfile:
@@ -463,24 +486,29 @@ Resources:
       SecurityGroups:
         - Ref: BWAFSecurityGroup
       UserData:
-        Fn::Base64:
+       Fn::Base64:
           !Sub
           - |
             #!/bin/bash
-            if [[ ${WAFLicenseModel} = PAYG ]]
-               	then
-               	if [[ -n ${BackupFileName} ]]
-               		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:$WAFServerIP:${AppServerPort}
-               	else
-               		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --enableRestoreBackup --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --s3LicensingBucket ${LicenseBucket} --s3LicensingFolder ${CudaLicenseSubDir} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
-            	fi
-               else
-               	if [[ -n ${BackupFileName} ]]
-               		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --config ${WAFServiceName}:${WAFServicePort}:${WAFServerIP}:${AppServerPort}
-            	else
-            		!Sub /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
-              		fi
-               fi
+            if [[ "${WAFLicenseModel}" == "PAYG" ]]; then
+              if [[ -n "${BackupFileName}" ]]; then
+                echo "<<PAYG with backup>>" > /home/remote/userdata.log
+                echo "--stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}" >> /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}
+              else
+                echo "<<PAYG, no backup>>" > /home/remote/userdata.log
+                echo "--stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}" >> /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --enableRestoreBackup --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --s3LicensingBucket ${LicenseBucket} --s3LicensingFolder ${CudaLicenseSubDir} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
+              fi
+            else
+              if [[ -n "${BackupFileName}" ]]; then
+                echo "<<BYOL with backup>>" > /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --config ${WAFServiceName}:${WAFServicePort}:${AppServerIP}:${AppServerPort}
+              else
+                echo "<<BYOL, no backup>>" > /home/remote/userdata.log
+                /opt/aws/bwaf/aws_autoscale.pl --command init-config --saveSystemDataOnTermination --dumpEC2Details --stack ${AWS::StackName} --resource BWAFAutoScaleLaunchConfig  --region ${AWS::Region} --vpc ${VPCID} --type ${WAFInstanceType} --s3ClusterBucket ${ClusterBucket} --licensebucket ${LicenseBucket} --subdirectory ${CudaLicenseSubDir} --defaultdomain ${DefaultDomain} --s3BootstrappingBucket ${BootstrappingS3Bucket} --s3BackupFolder ${CudaBackupSubDir} --configBackup ${BackupFileName}
+              fi
+            fi
           - WAFServerIP: curl http://169.254.169.254/latest/meta-data/local-ipv4
   BWAFAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup

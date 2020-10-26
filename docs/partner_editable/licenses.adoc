@@ -1,0 +1,45 @@
+// Include details about the license and how they can sign up. If no license is required, clarify that. 
+
+You are responsible for the cost of the AWS services used while running
+this Quick Start reference deployment. There is no additional cost for
+using the Quick Start.
+
+The AWS CloudFormation template for this Quick Start includes
+configuration parameters that you can customize. Some of these settings,
+such as instance type, affect the cost of deployment. For cost
+estimates, see the pricing pages for each AWS service you will use.
+Prices are subject to change.
+
+**Tip:** After you deploy the Quick Start, we recommend that you enable
+the https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html[AWS Cost and Usage
+Report].
+This report delivers billing metrics to an Amazon Simple Storage Service
+(Amazon S3) bucket in your account. It provides cost estimates based on
+usage throughout each month and finalizes the data at the end of the
+month. For more information about the report, see the https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html[AWS
+documentation].
+
+This Quick Start requires a license for Barracuda CloudGen WAF for AWS.
+There are multiple licensing options to choose from. For those with
+existing Barracuda WAF Licenses, a Bring Your Own License option can be
+found at the following link
+https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986[BYOL].
+There is also a Pay As You Go option which can be found at the following
+link
+https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&sr=0-3&ref_=srh_res_product_title[PAYG].
+To use the Quick Start in your production environment, sign up for a
+license at one of the above links before you launch the Quick Start. If
+you selected the BYOL option place the license key in an S3 bucket and
+remember its location.
+
+If you don't have a license, you can deploy the Quick Start with a trial
+license available in the PAYG option above. The trial license gives you
+30 days of free usage, including usage in a production environment.
+After this time, you can upgrade to a production license by following
+the instructions at the
+https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&sr=0-2&ref_=srh_res_product_title[AWS Marketplace].
+
+
+
+// Or, if the deployment uses an AMI, update this paragraph. If it doesn’t, remove the paragraph.
+_<AMI information>The Quick Start requires a subscription to the Amazon Machine Image (AMI) for {partner-product-short-name}, which is available from https://aws.amazon.com/marketplace/[AWS Marketplace^]. Additional pricing, terms, and conditions may apply. For instructions, see link:#step-2.-subscribe-to-the-software-ami[step 2] in the deployment section._
