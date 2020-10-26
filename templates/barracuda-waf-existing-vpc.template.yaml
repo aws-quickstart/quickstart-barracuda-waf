@@ -4,12 +4,15 @@ Description: This master template deploys 2 Barracuda Cloud Gen WAFs for a multi
   Attention **WARNING** This template creates EC2 instances and related resources. You will be billed for
   the AWS resources used if you create a stack from this template.
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Launch into a existing VPC"
+    Order: 2
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
         default: Network configuration
       Parameters:
-      - VCPID
+      - VPCID
       - PrivateSubnet1ACIDR
       - PrivateSubnet2ACIDR
       - PublicSubnet1ID
@@ -85,8 +88,8 @@ Metadata:
         default: S3 bucket for WAF Licenses
       CudaLicenseSubDir:
         default: The license directory
-      VPCCIDR:
-        default: VPC CIDR
+      VPCID:
+        default: VPC ID
       WAFInstanceType:
         default: WAF servers instance type
       QSS3BucketName:
@@ -99,6 +102,18 @@ Metadata:
         default: Email for notifications
       AppServerPort:
         default: Application server port
+      WAFServiceName:
+        default: Service being configured on the WAF
+      WAFServicePort:
+        default: Service Port being configured on the WAF
+      ScalingMinSize:
+        default: Minimum number of WAF instances
+      ScalingMaxSize:
+        default: Maxium number of WAF instances
+      EnvironmentName:
+        default: Envirnoment Name
+      WAFLicenseModel:
+        default: WAF license type
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names

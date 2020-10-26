@@ -3,7 +3,10 @@ Description: This master template deploys 2 Barracuda Cloud Gen WAFs for a multi
   deployment. It deploys to an existing VPC behind an ALB. The cluster is configured to use an S3 bucket for storage.   
   Attention **WARNING** This template creates EC2 instances and related resources. You will be billed for
   the AWS resources used if you create a stack from this template.
-Metadata: 
+Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Launch into a new VPC"
+    Order: 1
   AWS::CloudFormation::Interface: 
     ParameterGroups: 
       - Label: 
@@ -116,6 +119,18 @@ Metadata:
         default: Application server port
       AppServerIP:
         default: Application server IP
+      WAFServiceName:
+        default: Service being configured on the WAF
+      WAFServicePort:
+        default: Service Port being configured on the WAF
+      ScalingMinSize:
+        default: Minimum number of WAF instances
+      ScalingMaxSize:
+        default: Maxium number of WAF instances
+      EnvironmentName:
+        default: Envirnoment Name
+      WAFLicenseModel:
+        default: WAF license type
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names

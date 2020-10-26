@@ -3,6 +3,27 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
+* Note the Public IP address of the newly deployed Barracuda CloudGen
+WAF. Open the browser and enter the noted IP with port 80 for HTTP:
+http://INote the Public IP address of the newly deployed Barracuda CloudGen
+WAF. Open the browser and enter the noted IP with port 80 for HTTP:
+http://IP-Address:8000
+
+* Use "admin" and the instance-id for the WAF from the EC2 page in the
+AWS console. On the CloudGen WAF GUI go to Advanced, System
+Configuration and set Show Advanced Settings to Yes.
+
+![Showing advanced settings](media/image3.png){width="6.75in"
+height="0.9958333333333333in"}
+
+* On the CloudGen WAF GUI go to Basic, Services and create a new service
+for your web app. You need to provide: a service name, select the type
+and port, and for the moment put a dummy IP (like 1.1.1.1) into the Real
+Servers box:
+
+* Once the service and server have created then click "Edit" alongside
+the Server that was created. Change the identifier to "Hostname" and
+fill in the domain name of your web app into the Hostname field.P-Address:8000
 
 == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading
@@ -10,12 +31,37 @@
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any best practices for using the software._
+
+*Cluster for High Availability (HA) and redundancy*
+
+Due to the 24/7 nature of web traffic, it is important that any
+deployments in line with the data path have added redundancy. The
+Barracuda Web Application Firewalls configured in HA clusters will
+automatically synchronize security and network configurations between
+the clusters to provide seamless failover in response to disruptions.
+This is achieved by creating an autoscaling group of WAF clusters. IF
+you are using the BYOL template you will need licenses for the max
+number of instances you anticipate on scaling to. For more information
+on clustering, see https://campus.barracuda.com/doc/4259911/[High
+Availability].
+
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any security-related information._
+The Barracuda Web Application Firewall provides features to implement
+user authentication and access control. You can create a virtual private
+network (VPN) tunnel to control user access to websites. The user-access
+features allow you to specify who can access your websites and what
+access privileges each user has. By combining these with SSL encryption,
+you can create a secure VPN tunnel to your websites.
+
+Authentication can be implemented only for HTTP or HTTPS services. The
+authentication process requires users to provide a valid name and
+password to gain access. A validated user has qualified access to the
+website; that is, the data and services this user can access depend on
+his or her authorization privileges.
+
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
