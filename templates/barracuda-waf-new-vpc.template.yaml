@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: This master template deploys 2 Barracuda Cloud Gen WAFs for a multi-AZ, multi-tier
   deployment. It deploys to an existing VPC behind an ALB. The cluster is configured to use an S3 bucket for storage.   
   Attention **WARNING** This template creates EC2 instances and related resources. You will be billed for
-  the AWS resources used if you create a stack from this template.
+  the AWS resources used if you create a stack from this template. (qs-1r90s0gb8)
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Launch into a new VPC"
