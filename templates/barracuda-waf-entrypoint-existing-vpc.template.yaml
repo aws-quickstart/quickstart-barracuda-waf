@@ -214,14 +214,6 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
-  #WAFServerIP:
-    #Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
-    #  Web Application Firewall; alternatively, you can also enter the FQDN of the
-    #  instance or a downstream ELB to connect to.
-    #ConstraintDescription: Must be a valid IP address or FQDN
-    #MinLength: '7'
-    #MaxLength: '65535'
-    #Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect

@@ -18,8 +18,6 @@ Metadata:
           - PrivateSubnet2ACIDR
           - PublicSubnet1CIDR
           - PublicSubnet2CIDR
-          #- ELBName
-          #- ElbTargetGroup
       - Label: 
           default: "WAF Configuration"
         Parameters: 
@@ -440,8 +438,6 @@ Resources:
         - !GetAtt VPCStack.Outputs.PublicSubnet1ID
         - !GetAtt VPCStack.Outputs.PublicSubnet2ID
       Scheme: internet-facing ##internal <<- is other option
-      #LoadBalancerAttributes:
-      #- LoadBalancerAttributes
       Tags:
         - Key: Name
           Value: !Sub "${EnvironmentName}-${WAFServiceName}-LB"
