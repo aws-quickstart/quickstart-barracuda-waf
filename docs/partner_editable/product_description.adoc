@@ -5,4 +5,6 @@
 Barracuda CloudGen WAF for AWS
 ------------------------------
 
-The WAF runs on the M4 and M5 families of EC2 instances
+The Barracuda WAF is designed to offer a highly-configurable set of controls, enabling easier migration and security for formerly on-premises workloads now deployed in AWS.  It operates as a Reverse Proxy, inspecting traffic in both directions, so it also provides Data Loss Prevention features.
+
+The WAF runs on the M4 and M5 families of EC2 instances.

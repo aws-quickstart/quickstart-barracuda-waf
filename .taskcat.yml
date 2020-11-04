@@ -28,11 +28,41 @@ tests:
       AdministratorName: override
       AdministratorEmailID: override
       WAFServiceName: $[taskcat_random-string]
+      AppServerIP: 10.0.16.1
       AppServerPort: 1110
       NotificationEmail: override
       LicenseBucket: override
       CudaLicenseSubDir: override
     regions:
     - us-east-1
+    s3_bucket: ''
+    template: templates/barracuda-waf-entrypoint-new-vpc.template.yaml
+  barracuda-waf-payg:
+    parameters:
+      AvailabilityZones: $[taskcat_getaz_2]
+      CreatePrivateSubnets: 'true'
+      NumberOfAZs: '2'
+      PrivateSubnet1ACIDR: 10.0.0.0/19
+      PrivateSubnet2ACIDR: 10.0.32.0/19
+      PublicSubnet1CIDR: 10.0.128.0/20
+      PublicSubnet2CIDR: 10.0.144.0/20
+      CreateNATGateways: 'false'
+      VPCCIDR: 10.0.0.0/16
+      KeyPairName: $[taskcat_getkeypair]
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3KeyPrefix: quickstart-barracuda-waf/
+      EnvironmentName: $[taskcat_random-string]
+      AdministratorName: override
+      AdministratorEmailID: override
+      WAFServiceName: $[taskcat_random-string]
+      AppServerIP: 10.0.16.1
+      AppServerPort: 1110
+      NotificationEmail: override
+      LicenseBucket: override
+      CudaLicenseSubDir: override
+      WAFLicenseModel: 'PAYG'
+    regions:
+    - us-east-2
     s3_bucket: ''
     template: templates/barracuda-waf-entrypoint-new-vpc.template.yaml

@@ -32,6 +32,7 @@ Metadata:
         default: Misc configuration
       Parameters:
       - AppServerPort
+      - AppServerIP
       - DefaultDomain
       - ProxyServerIP
       - ProxyServerPort
@@ -47,6 +48,9 @@ Metadata:
       Parameters:
       - LicenseBucket
       - CudaLicenseSubDir
+      - CudaBackupSubDir
+      - BootstrappingS3Bucket
+      - BackupFileName
     - Label:
         default: AWS Quick Start configuration
       Parameters:
@@ -62,6 +66,8 @@ Metadata:
         default: Administrator Email Address
       AdministratorCompany:
         default: Administrator Company
+      BootstrappingS3Bucket:
+        default: Bootstrapping S3 bucket
       DefaultDomain:
         default: Default Domain to be used
       ProxyServerIP:
@@ -76,10 +82,6 @@ Metadata:
         default: Private subnet 1 CIDR
       PrivateSubnet2ACIDR:
         default: Private subnet 2 CIDR
-      PublicSubnet1CIDR:
-        default: Public subnet 1 CIDR
-      PublicSubnet2CIDR:
-        default: Public subnet 2 CIDR
       PublicSubnet1ID:
         default: Public subnet 1 ID
       PublicSubnet2ID:
@@ -88,6 +90,8 @@ Metadata:
         default: S3 bucket for WAF Licenses
       CudaLicenseSubDir:
         default: The license directory
+      CudaBackupSubDir:
+        default: Bootstrapping sub directory
       VPCID:
         default: VPC ID
       WAFInstanceType:
@@ -114,24 +118,36 @@ Metadata:
         default: Envirnoment Name
       WAFLicenseModel:
         default: WAF license type
+      BackupFileName:
+        default: Backup file name
+      AppServerIP:
+        default: Application server IP
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
     Type: String
   LicenseBucket:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF License files.
+    AllowedPattern: "[0-9a-z-]*"
+    ConstraintDescription: The S3 bucket with your Barracuda CloudGen WAF license files.
     Description: S3 bucket name for the Quick Start assets. This string can include
-      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      numbers, lowercase letters, and hyphens (-). It cannot start
       or end with a hyphen (-).
     Type: String
   CudaLicenseSubDir:
     Type: String
     AllowedPattern: "[^\\s]*"
-    Description: 'Specify the folder on the specified License S3 Bucket which contains
-      the BYOL License File. Leave blank if there is no specific folder for Licenses
-      on the S3 Bucket. Examples: Barracuda/Licenses(Two level folder structure),
-      BarracudaBYOLLicenses(One level folder structure).'
+    Description: 'Specify the folder on the specified license S3 Bucket which contains
+      the BYOL license File. Leave blank if there is no specific folder for licenses
+      on the S3 Bucket. Examples: barracuda/licenses(Two level folder structure),
+      barracudabyollicenses(One level folder structure).'
+  CudaBackupSubDir:
+    Type: String
+    AllowedPattern: '[^\s]*'
+    Description: 'Specify the folder on the specified Bootstrapping S3 bucket which
+      contains the backup file. Leave blank if there is no specific folder for backups
+      on the S3 bucket. Examples: barracuda/wafbackups(Two level folder structure),
+      barracudawafbackup(One level folder structure).'
+    Default: ''
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
@@ -195,7 +211,7 @@ Parameters:
     MaxValue: '20'
     MinValue: '2'
   NotificationEmail:
-     Description: Enter a valid email address to send AutoSclaing Event Notifications
+     Description: Enter a valid email address to send AutoSclaing event notifications
      Type: String
      AllowedPattern: "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
      ConstraintDescription: Must be a valid email address.
@@ -214,14 +230,12 @@ Parameters:
     Type: Number
     MaxValue: '65535'
     MinValue: '1'
-  #WAFServerIP:
-    #Description: Specify the Server IP (inside the VPC) to be configured on the Barracuda
-    #  Web Application Firewall; alternatively, you can also enter the FQDN of the
-    #  instance or a downstream ELB to connect to.
-    #ConstraintDescription: Must be a valid IP address or FQDN
-    #MinLength: '7'
-    #MaxLength: '65535'
-    #Type: String
+  AppServerIP:
+    Description: Specify the server IP (inside the VPC) to be configured on the Barracuda
+      Web Application Firewall; alternatively, you can also enter the FQDN of the
+      instance or a downstream ELB to connect to.
+    ConstraintDescription: Must be a valid IP address or FQDN
+    Type: String
   AppServerPort:
     Description: Specify the port number on which the web application responds. This
       is the port that the Barracuda Web Application Firewall will use to connect
@@ -270,25 +284,41 @@ Parameters:
     MaxLength: '64'
     Type: String
   ProxyServerIP:
-    Description: Enter the IP of your Proxy Server
+    Description: Enter the IP of your proxy server
     Type: String
     Default: ''
   ProxyServerPort:
-    Description: Enter the Port of your Proxy Server
+    Description: Enter the Port of your proxy server
     Type: String
     Default: ''
   ProxyServerUsername:
-    Description: Enter the Username for your Proxy Server. Leave it empty in case
-      you dont have any username for your Proxy Server.
+    Description: Enter the username for your proxy server. Leave it empty in case
+      you dont have any username for yourp proxy server.
     Type: String
     Default: ''
   ProxyServerPassword:
-    Description: Enter the Password for your Proxy Server. Leave it empty in case
-      you dont have any password for your Proxy Server.
+    Description: Enter the password for your proxy server. Leave it empty in case
+      you dont have any password for your proxy server.
     Type: String
+    Default: ''
+  WAFLicenseModel:
+    Description: Select the proper licensing type for your deployment. The options are "Bring Your Own License (BYOL)" or "Pay as You Go (PAYG)". The default is BYOL.
+    Type: String
+    AllowedValues:
+      - 'BYOL'
+      - 'PAYG'
+    Default: 'BYOL'
+  BootstrappingS3Bucket:
+    Type: String
+    Description: S3 Bucket which has the backups in it.
+    Default: ''
+  BackupFileName:
+    Type: String
+    Description: Backup filename which needs to be restored on WAF when it boots up. Ex. BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak
     Default: ''
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingWAFBackups: !Not [!Equals [!Ref BackupFileName, "AWS::NoValue"]]
 Resources:
   WAFStack:
     Type: AWS::CloudFormation::Stack
@@ -300,12 +330,14 @@ Resources:
       Parameters:
         EnvironmentName: !Ref EnvironmentName
         WAFServiceName: !Ref WAFServiceName
+        KeyPairName: !Ref KeyPairName
         VPCID: !Ref VPCID
         PrivateSubnet1ACIDR: !Ref PrivateSubnet1ACIDR
         PrivateSubnet2ACIDR: !Ref PrivateSubnet2ACIDR
         PublicSubnet1ID: !Ref PublicSubnet1ID
         PublicSubnet2ID: !Ref PublicSubnet2ID
         AppServerPort: !Ref AppServerPort
+        AppServerIP: !Ref AppServerIP
         AdministratorEmailID: !Ref AdministratorEmailID
         AdministratorName: !Ref AdministratorName
         ELBName: !GetAtt ELB.DNSName
@@ -323,7 +355,10 @@ Resources:
         AdministratorCompany: !Ref AdministratorCompany
         LicenseBucket: !Ref LicenseBucket
         CudaLicenseSubDir: !Ref CudaLicenseSubDir
-        KeyPairName: !Ref KeyPairName
+        WAFLicenseModel: !Ref WAFLicenseModel
+        CudaBackupSubDir: !If [ UsingWAFBackups, !Ref CudaBackupSubDir, "AWS::NoValue" ]
+        BackupFileName: !If [ UsingWAFBackups, !Ref BackupFileName, "AWS::NoValue" ]
+        BootstrappingS3Bucket: !If [ UsingWAFBackups, !Ref BootstrappingS3Bucket, "AWS::NoValue" ]
   ElbTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
