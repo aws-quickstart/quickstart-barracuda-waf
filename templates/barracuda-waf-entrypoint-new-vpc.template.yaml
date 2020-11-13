@@ -147,13 +147,6 @@ Parameters:
       the BYOL license File. Leave blank if there is no specific folder for licenses
       on the S3 Bucket. Examples: barracuda/licenses(Two level folder structure),
       barracudabyollicenses(One level folder structure).'
-  CudaBackupSubDir:
-    Type: String
-    AllowedPattern: '[^\s]*'
-    Description: 'Specify the folder on the specified Bootstrapping S3 bucket which
-          contains the backup file. Leave blank if there is no specific folder for backups
-          on the S3 bucket. Examples: barracuda/wafbackups(Two level folder structure),
-          barracudawafbackup(One level folder structure).'
     Default: ''
   BackupFileName:
     Type: String
@@ -161,7 +154,7 @@ Parameters:
     Default: ''
   BootstrappingS3Bucket:
     Type: String
-    Description: S3 Bucket which has the backups in it.
+    Description: S3 bucket which has the backups in it.
     Default: ''
   AvailabilityZones:
     Description: The list of Availability Zones to use for the subnets in the VPC. Three
@@ -225,7 +218,7 @@ Parameters:
     ConstraintDescription: Must be a valid company name with 2 - 64 characters.
     MinLength: '2'
     MaxLength: '64'
-    Description: By entering the Name, Email Address and Company (if applicable) above
+    Description: By entering the Name, Email address and Company (if applicable) above
       you agree to terms and conditions outlined in the product End User License Agreement
       (https://www.barracuda.com/legal/software_license_agreement) and Privacy Policy
       (https://www.barracuda.com/legal/privacy).
@@ -251,14 +244,14 @@ Parameters:
      AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
      ConstraintDescription: Must be a valid email address.
   WAFServiceName:
-    Description: Specify the Service Name to be configured on the Barracuda Web Application
+    Description: Specify the Service name to be configured on the Barracuda Web Application
       Firewall
     AllowedPattern: "[0-9a-zA-Z-_]*"
     MinLength: '2'
     MaxLength: '64'
     Type: String
   WAFServicePort:
-    Description: Specify the Service Port to be configured on the Barracuda Web Application
+    Description: Specify the service port to be configured on the Barracuda Web Application
       Firewall. This the port that is exposed to the outside world. Default is 80.
     Default: '80'
     ConstraintDescription: Must be a valid port number (1-65535).
@@ -321,7 +314,7 @@ Parameters:
     Type: String
     Default: ''
   ProxyServerPort:
-    Description: Enter the Port of your proxy server
+    Description: Enter the port of your proxy server
     Type: String
     Default: ''
   ProxyServerUsername:

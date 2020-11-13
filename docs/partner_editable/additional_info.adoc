@@ -5,8 +5,6 @@
 // If steps are required to test the deployment, add them here. If not, remove the heading
 * Note the Public IP address of the newly deployed Barracuda CloudGen
 WAF. Open the browser and enter the noted IP with port 80 for HTTP:
-http://INote the Public IP address of the newly deployed Barracuda CloudGen
-WAF. Open the browser and enter the noted IP with port 80 for HTTP:
 http://IP-Address:8000
 
 * Use "admin" and the instance-id for the WAF from the EC2 page in the
@@ -24,7 +22,7 @@ Servers box:
 
 * Once the service and server have created then click "Edit" alongside
 the Server that was created. Change the identifier to "Hostname" and
-fill in the domain name of your web app into the Hostname field.P-Address:8000
+fill in the domain name of your web app into the Hostname field.
 
 
 
