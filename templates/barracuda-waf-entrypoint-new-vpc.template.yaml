@@ -239,10 +239,10 @@ Parameters:
     MaxValue: '20'
     MinValue: '2'
   NotificationEmail:
-     Description: Enter a valid email address to send AutoSclaing event notifications
-     Type: String
-     AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
-     ConstraintDescription: Must be a valid email address.
+    Description: Enter a valid email address to send AutoSclaing event notifications
+    Type: String
+    AllowedPattern: ([a-zA-Z0-9_+\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)
+    ConstraintDescription: Must be a valid email address.
   WAFServiceName:
     Description: Specify the Service name to be configured on the Barracuda Web Application
       Firewall
