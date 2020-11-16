@@ -3,30 +3,29 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
-* Note the Public IP address of the newly deployed Barracuda CloudGen
-WAF. Open the browser and enter the noted IP with port 80 for HTTP:
-http://INote the Public IP address of the newly deployed Barracuda CloudGen
-WAF. Open the browser and enter the noted IP with port 80 for HTTP:
-http://IP-Address:8000
+* Note the Public IP address of the newly deployed Barracuda CloudGen WAF. Open the browser and enter the noted IP with port 8000 for HTTP: http://IP-Address:8000. If the license agreement page is displayed then scroll to the bottom and click Accept.
 
-* Use "admin" and the instance-id for the WAF from the EC2 page in the
-AWS console. On the CloudGen WAF GUI go to Advanced, System
-Configuration and set Show Advanced Settings to Yes.
+* At the Admin login page use “admin” as the username and the instance-ID as the password. NOTE: each WAF will have its own admin password so be sure to match the instance-ID with the instance’s elastic IP address. On the CloudGen WAF GUI go to Advanced, System Configuration and set Show Advanced Settings to Yes. Click the green Save button.
 
-![Showing advanced settings](media/image3.png){width="6.75in"
-height="0.9958333333333333in"}
+[Advanced Settings]
 
-* On the CloudGen WAF GUI go to Basic, Services and create a new service
-for your web app. You need to provide: a service name, select the type
-and port, and for the moment put a dummy IP (like 1.1.1.1) into the Real
-Servers box:
+image::../images/advanced_settings_images3.png[width=50%,height=50%]
 
-* Once the service and server have created then click "Edit" alongside
-the Server that was created. Change the identifier to "Hostname" and
-fill in the domain name of your web app into the Hostname field.P-Address:8000
+*  On the CloudGen WAF GUI go to Basic, Services. You should see a WAF service matching the WAFServiceName and WAFServicePort parameters from the CFT stack. If you specified an application server port and IP you will see it listed under the service. Example:
 
-== Post-deployment steps
-// If post-deployment steps are required, add them here. If not, remove the heading
+image::../images/showing_gui_image4.png[width=60%,height=60%]
+
+* The application server IP address and port can be changed if needed. You may also specify a hostname instead of IP address. Under the column Actions click the Edit link for the application server. In the identifier drop-down select IP Address or Hostname and then specify the corresponding value. Here is an example using an internal load balancer DNS name:
+
+image::../images/server_name_image5.png[width=50%,height=50%]
+
+* You will need a working application server (i.e. “origin server”) in order to fully test the WAF functionality. For simple testing use HTTP on port 80. Browse to the DNS name of the load balancer created by the stack deployment. In the AWS console navigate to EC2 > Load Balancers and select the load balancer. On the Description tab locate the DNS name and click the copy icon to copy the load balancer DNS name to the clipboard. Open a new browser tab and paste the DNS name into the address bar.
+
+* View website access activity in the WAF UI. Navigate to BASIC > Access Logs to see all web requests that have passed through the WAF. Navigate to BASIC > Web Firewall Logs to see all requests that have been blocked, cloaked, or logged as suspicious. Initially the WAF is in passive mode, so bad traffic is marked as LOGGED.
+
+* Additional information on configuring the WAF can be found at Securing HTTP/HTTPS Traffic
+
+
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
@@ -63,7 +62,4 @@ website; that is, the data and services this user can access depend on
 his or her authorization privileges.
 
 
-== Other useful information
-//Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-_Add any other details that will help the customer use the software on AWS._
