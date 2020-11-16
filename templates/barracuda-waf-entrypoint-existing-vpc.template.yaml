@@ -141,6 +141,14 @@ Parameters:
       on the S3 Bucket. Examples: barracuda/licenses(Two level folder structure),
       barracudabyollicenses(One level folder structure).'
     Default: ''
+  CudaBackupSubDir:
+    Type: String
+    AllowedPattern: '[^\s]*'
+    Description: 'Specify the folder on the specified Bootstrapping S3 bucket which
+          contains the backup file. Leave blank if there is no specific folder for backups
+          on the S3 bucket. Examples: barracuda/wafbackups(Two level folder structure),
+          barracudawafbackup(One level folder structure).'
+    Default: ''
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches

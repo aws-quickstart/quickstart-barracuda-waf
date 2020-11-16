@@ -148,6 +148,14 @@ Parameters:
       on the S3 Bucket. Examples: barracuda/licenses(Two level folder structure),
       barracudabyollicenses(One level folder structure).'
     Default: ''
+  CudaBackupSubDir:
+    Type: String
+    AllowedPattern: '[^\s]*'
+    Description: 'Specify the folder on the specified Bootstrapping S3 bucket which
+          contains the backup file. Leave blank if there is no specific folder for backups
+          on the S3 bucket. Examples: barracuda/wafbackups(Two level folder structure),
+          barracudawafbackup(One level folder structure).'
+    Default: ''
   BackupFileName:
     Type: String
     Description: Backup filename which needs to be restored on WAF when it boots up. Ex. BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak
