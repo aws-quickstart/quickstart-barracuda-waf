@@ -9,15 +9,15 @@
 
 [Advanced Settings]
 
-image::../images/image3.png[Architecture,width=100%,height=100%]
+image::../images/advanced_settings_images3.png[width=50%,height=50%]
 
 *  On the CloudGen WAF GUI go to Basic, Services. You should see a WAF service matching the WAFServiceName and WAFServicePort parameters from the CFT stack. If you specified an application server port and IP you will see it listed under the service. Example:
 
-![Showing WAF GUI](media/showing_gui_image4.png){width="5.99in",height="3.69in"}
+image::../images/showing_gui_image4.png[width=60%,height=60%]
 
 * The application server IP address and port can be changed if needed. You may also specify a hostname instead of IP address. Under the column Actions click the Edit link for the application server. In the identifier drop-down select IP Address or Hostname and then specify the corresponding value. Here is an example using an internal load balancer DNS name:
 
-![Showing Server Name](media/showing_server_name_image5.png){width="4.08in",height="1.76in"}
+image::../images/server_name_image5.png[width=50%,height=50%]
 
 * You will need a working application server (i.e. “origin server”) in order to fully test the WAF functionality. For simple testing use HTTP on port 80. Browse to the DNS name of the load balancer created by the stack deployment. In the AWS console navigate to EC2 > Load Balancers and select the load balancer. On the Description tab locate the DNS name and click the copy icon to copy the load balancer DNS name to the clipboard. Open a new browser tab and paste the DNS name into the address bar.
 
