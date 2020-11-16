@@ -6,7 +6,6 @@ Description: This entrypoint template deploys 2 Barracuda Cloud Gen WAFs for a m
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Launch into a new VPC"
-    Order: 1
   AWS::CloudFormation::Interface: 
     ParameterGroups: 
       - Label: 

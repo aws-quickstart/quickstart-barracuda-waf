@@ -6,7 +6,6 @@ Description: This master template deploys 2 Barracuda Cloud Gen WAFs for a multi
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Launch into a existing VPC"
-    Order: 2
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
