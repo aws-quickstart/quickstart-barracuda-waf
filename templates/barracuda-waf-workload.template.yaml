@@ -656,3 +656,14 @@ Resources:
       Namespace: AWS/EC2
       Period: 900
       MetricName: CPUUtilization
+Outputs:
+  BWAFAutoScalingGroup:
+    Description: Auto Scaling Group Reference ID
+    Value: !Ref BWAFAutoScalingGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-BastionAutoScalingGroup'
+  BWAFAutoScaleLaunchConfig:
+    Description: Auto Scaling Group Instance ID
+    Value: !Ref BWAFAutoScaleLaunchConfig
+    Export:
+      Name: !Sub '${AWS::StackName}-BWAFAutoScaleLaunchConfig'
