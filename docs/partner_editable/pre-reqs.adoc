@@ -5,11 +5,10 @@
 
 Obtain a license or have your license ready.
 
-* For those with existing Barracuda WAF Licenses, a Bring Your Own License option can be
-found at the following link https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986[BYOL].
+* For those with existing Barracuda WAF Licenses, read about the Bring Your Own License (BYOL) option in the https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986[Barracuda CloudGen WAF for AWS - BYOL] topic.
 
-** If you selected the BYOL option place the license key in a S3 bucket in the account you are deploying in. Remember its location as you will need to place it the parameter "CudaLicenseSubDir" during deployment.
+When using the BYOL option, place the license key in an Amazon S3 bucket in your deployment account. Remember the location, as you will need to add it to the `CudaLicenseSubDir` parameter during deployment.
 
-* The "Pay As You Go" option which can be found at the following link https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&sr=0-3&ref_=srh_res_product_title[PAYG].
+* If you don't have a license, you can use the Pay As You Go (PAYG) option. For more information, including details about a trial license, see https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&sr=0-3&ref_=srh_res_product_title[Barracuda CloudGen WAF for AWS - PAYG].
 
 

@@ -3,63 +3,40 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
-* Note the Public IP address of the newly deployed Barracuda CloudGen WAF. Open the browser and enter the noted IP with port 8000 for HTTP: http://IP-Address:8000. If the license agreement page is displayed then scroll to the bottom and click Accept.
+* Note the public IP address of the new {partner-product-short-name} deployment. Open a browser and enter the IP address with port 8000 for HTTP (example: http://IP-Address:8000). If the license agreement page appears, scroll to the bottom and choose *Accept*.
 
-* At the Admin login page use “admin” as the username and the instance-ID as the password. NOTE: each WAF will have its own admin password so be sure to match the instance-ID with the instance’s elastic IP address. On the CloudGen WAF GUI go to Advanced, System Configuration and set Show Advanced Settings to Yes. Click the green Save button.
+* On the administrator login page, use `admin` as the user name and the instance-ID as the password. 
 
-[Advanced Settings]
+NOTE: Each WAF has its own admin password, so be sure to match the instance-ID with the instance’s elastic IP address. On the {partner-product-short-name} UI, go to *Advanced > System Configuration* and set the *Show Advanced Settings* option to *Yes*. Choose the green *Save* button.
 
 image::../images/advanced_settings_images3.png[width=50%,height=50%]
 
-*  On the CloudGen WAF GUI go to Basic, Services. You should see a WAF service matching the WAFServiceName and WAFServicePort parameters from the CFT stack. If you specified an application server port and IP you will see it listed under the service. Example:
+* On the {partner-product-short-name} UI, navigate to *Basic > Services*. You should see a WAF service matching the `WAFServiceName` and `WAFServicePort` parameters from the CloudFormation stack. If you specified an application server port and IP address, you will see them listed as a service:
 
 image::../images/showing_gui_image4.png[width=60%,height=60%]
 
-* The application server IP address and port can be changed if needed. You may also specify a hostname instead of IP address. Under the column Actions click the Edit link for the application server. In the identifier drop-down select IP Address or Hostname and then specify the corresponding value. Here is an example using an internal load balancer DNS name:
+* You can change the application server IP address and port, if needed. You can also specify a host name instead of an IP address. Under the *Actions* column, choose the *Edit* link for the application server. In the identifier drop-down list, select *IP Address* or *Hostname* and then specify the corresponding value. Here is an example using an internal load balancer DNS name:
 
 image::../images/server_name_image5.png[width=50%,height=50%]
 
-* You will need a working application server (i.e. “origin server”) in order to fully test the WAF functionality. For simple testing use HTTP on port 80. Browse to the DNS name of the load balancer created by the stack deployment. In the AWS console navigate to EC2 > Load Balancers and select the load balancer. On the Description tab locate the DNS name and click the copy icon to copy the load balancer DNS name to the clipboard. Open a new browser tab and paste the DNS name into the address bar.
+* You must have a working application server (i.e., origin server) to fully test the WAF functionality. For simple testing, use HTTP on port 80. Browse to the DNS name of the load balancer created by the stack deployment. In the AWS Console, navigate to *EC2 > Load Balancers* and select the load balancer. On the *Description* tab, locate the DNS name and select the copy icon to copy the load balancer DNS name to the clipboard. Open a new browser tab and paste the DNS name into the address bar.
 
-* View website access activity in the WAF UI. Navigate to BASIC > Access Logs to see all web requests that have passed through the WAF. Navigate to BASIC > Web Firewall Logs to see all requests that have been blocked, cloaked, or logged as suspicious. Initially the WAF is in passive mode, so bad traffic is marked as LOGGED.
+* View website access activity in the WAF UI. Navigate to *BASIC > Access Logs* to see the web requests that have passed through the WAF. Navigate to *BASIC > Web Firewall Logs* to see requests that have been blocked, cloaked, or logged as suspicious. Initially the WAF is in passive mode, so bad traffic is marked as LOGGED.
 
 * Additional information on configuring the WAF can be found at Securing HTTP/HTTPS Traffic
 
 
 
-== Best practices for using {partner-product-short-name} on AWS
+== Configure HA clusters for seamless failover 
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-
-*Cluster for High Availability (HA) and redundancy*
-
-Due to the 24/7 nature of web traffic, it is important that any
-deployments in line with the data path have added redundancy. The
-Barracuda Web Application Firewalls configured in HA clusters will
-automatically synchronize security and network configurations between
-the clusters to provide seamless failover in response to disruptions.
-This is achieved by creating an autoscaling group of WAF clusters. IF
-you are using the BYOL template you will need licenses for the max
-number of instances you anticipate on scaling to. For more information
-on clustering, see https://campus.barracuda.com/doc/4259911/[High
-Availability].
+Due to the 24/7 nature of web traffic, deployments that are in line with the data path should have added redundancy. The Barracuda WAFs configured in high availability (HA) clusters automatically synchronize security and network configurations between the clusters to provide seamless failover in response to disruptions. This occurs by creating an Auto Scaling group of WAF clusters. If you are using the Buy Your Own License (BYOL) template, you will need licenses for the maximum number of instances to which you will scale. For more information
+on clustering, see https://campus.barracuda.com/doc/4259911/[High Availability].
 
 
-== Security
+== Configure security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-The Barracuda Web Application Firewall provides features to implement
-user authentication and access control. You can create a virtual private
-network (VPN) tunnel to control user access to websites. The user-access
-features allow you to specify who can access your websites and what
-access privileges each user has. By combining these with SSL encryption,
-you can create a secure VPN tunnel to your websites.
+The Barracuda WAF provides features to implement user authentication and access control. You can create a VPN tunnel to control user access to websites. The user-access features allow you to specify who can access your websites and what access privileges each user has. By combining these with SSL encryption, you can create a secure VPN tunnel to your websites.
 
-Authentication can be implemented only for HTTP or HTTPS services. The
-authentication process requires users to provide a valid name and
-password to gain access. A validated user has qualified access to the
-website; that is, the data and services this user can access depend on
-his or her authorization privileges.
-
-
-
+You can implement authentication only for HTTP or HTTPS services. The authentication process requires users to provide a valid name and password to gain access. A validated user has qualified access to the website; the data and services this user can access depend on his or her authorization privileges.

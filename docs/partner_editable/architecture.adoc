@@ -6,20 +6,18 @@ AWS Cloud.
 :xrefstyle: short
 [#architecture1]
 .Quick Start architecture for {partner-product-short-name} on AWS
-image::../images/architecture_diagram.png[Architecture,width=80%,height=80%]
+image::../images/barracuda-cloudgen-waf-architecture-diagram.png[Architecture,width=80%,height=80%]
 
 As shown in <<architecture1>>, the Quick Start sets up the following:
 
 * A highly available architecture that spans two Availability Zones.*
 * A VPC configured with public and private subnets, according to AWS
     best practices, to provide you with your own virtual network on
-    AWS. *
-
-In the public subnets:
-
-* A Network Load Balancer pointing to 2 WAF instances.
-* 2 Barracuda WAF instances, in a AutoScaling group.
-* A Nat gateway in each of the Availability Zones.
-
+    AWS. 
+* In the public subnets:
+** A Network Load Balancer pointing to two Barracuda WAF instances.
+** Two Barracuda WAF instances, in a Auto Scaling group.
+** A network address translation (NAT) gateway in each of the Availability Zones.
+* An Amazon Simple Storage Service (Amazon S3) bucket for storing backup and restoration files.
 
 [.small]#*The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#

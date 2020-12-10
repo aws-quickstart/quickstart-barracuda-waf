@@ -809,8 +809,8 @@ p.footer-text a{color:#d7d8d8}
 </ul>
 </li>
 <li><a href="#_test_the_deployment">Test the deployment</a></li>
-<li><a href="#_best_practices_for_using_cloudgen_waf_on_aws">Best practices for using CloudGen WAF on AWS</a></li>
-<li><a href="#_security">Security</a></li>
+<li><a href="#_configure_ha_clusters_for_seamless_failover">Configure HA clusters for seamless failover</a></li>
+<li><a href="#_configure_security">Configure security</a></li>
 <li><a href="#_faq">FAQ</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
@@ -862,18 +862,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide provides instructions for deploying the CloudGen WAF Quick Start reference architecture on the AWS Cloud.</p>
+<p>This deployment guide provides instructions for deploying the CloudGen WAF Quick Start reference architecture on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for users who use WAFs to protect applications
-hosted in AWS. Typically, organizations deploy the Barracuda WAF to
-protect web-facing applications they are either deploying in or
-migrating to AWS.</p>
-</div>
-<div class="paragraph">
-<p>Please know that we may share who uses AWS Quick Starts with the AWS
-Partner Network (APN) Partner that collaborated with AWS on the content
-of the Quick Start.</p>
+<p>This Quick Start is for those who use web application firewalls (WAF) to protect applications that are hosted in the AWS Cloud. Typically, organizations deploy the CloudGen WAF to protect web-facing applications they are either deploying in or migrating to AWS.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -893,10 +885,10 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 <h2 id="_barracuda_cloudgen_waf_on_aws">Barracuda CloudGen WAF on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Barracuda WAF is designed to offer a highly-configurable set of controls, enabling easier migration and security for formerly on-premises workloads now deployed in AWS.  It operates as a Reverse Proxy, inspecting traffic in both directions, so it also provides Data Loss Prevention features.</p>
+<p>The Barracuda WAF is designed to offer a highly-configurable set of controls, enabling easier migration and security for formerly on-premises workloads that are now deployed in AWS. It operates as a reverse proxy, inspecting traffic in both directions, so it also provides data loss prevention (DLP) features.</p>
 </div>
 <div class="paragraph">
-<p>The WAF runs on the M4 and M5 families of EC2 instances.</p>
+<p>The Barracuda WAF runs on the M4 and M5 families of Amazon Elastic Compute Cloud (Amazon EC2) instances.</p>
 </div>
 </div>
 </div>
@@ -933,28 +925,23 @@ After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccoun
 <div class="sectionbody">
 <div class="paragraph">
 <p>This Quick Start requires a license for Barracuda CloudGen WAF for AWS.
-There are multiple licensing options to choose from. For those with
-existing Barracuda WAF Licenses, a Bring Your Own License option can be
-found at the following link
-<a href="https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986">BYOL</a>.
-There is also a Pay As You Go option which can be found at the following
-link
-<a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&amp;sr=0-3&amp;ref_=srh_res_product_title">PAYG</a>.
+Multiple licensing options are available. For those with
+existing Barracuda WAF licenses, a Bring Your Own License (BYOL) option is available. For details, see <a href="https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986">Barracuda CloudGen WAF for AWS - BYOL</a>.
+A Pay As You Go (PAYG) option is also available. For details, see <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&amp;sr=0-3&amp;ref_=srh_res_product_title">Barracuda CloudGen WAF for AWS - PAYG</a>.
 To use the Quick Start in your production environment, sign up for a
-license at one of the above links before you launch the Quick Start. If
-you selected the BYOL option place the license key in an S3 bucket and
+license at one of the sites above before you launch the Quick Start. If
+you selected the BYOL option, place the license key in an Amazon Simple Storage Service (Amazon S3) bucket and
 remember its location.</p>
 </div>
 <div class="paragraph">
 <p>If you don&#8217;t have a license, you can deploy the Quick Start with a trial
-license available in the PAYG option above. The trial license gives you
+license that is available in the PAYG option. The trial license gives you
 30 days of free usage, including usage in a production environment.
 After this time, you can upgrade to a production license by following
-the instructions at the
-<a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&amp;sr=0-2&amp;ref_=srh_res_product_title">AWS Marketplace</a>.</p>
+the instructions on the <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&amp;sr=0-2&amp;ref_=srh_res_product_title">Barracuda CloudGen WAF for AWS - PAYG</a> site.</p>
 </div>
 <div class="paragraph">
-<p><em>&lt;AMI information&gt;The Quick Start requires a subscription to the Amazon Machine Image (AMI) for CloudGen WAF, which is available from <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&amp;sr=0-2&amp;ref=srh_res_product_title">AWS Marketplace</a>. Additional pricing, terms, and conditions may apply. For instructions, see <a href="#_subscribe_to_the_cloudgen_waf_ami">Subscribe to the CloudGen WAF AMI</a> in the deployment section.</em></p>
+<p>The Quick Start requires a subscription to the Amazon Machine Image (AMI) for CloudGen WAF, which is available from the <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&amp;sr=0-2&amp;ref=srh_res_product_title">Barracuda CloudGen WAF for AWS - PAYG</a> site. Additional pricing, terms, and conditions may apply. For instructions, see <a href="#_subscribe_to_the_cloudgen_waf_ami">Subscribe to the CloudGen WAF AMI</a> in the deployment section.</p>
 </div>
 </div>
 </div>
@@ -968,7 +955,7 @@ AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
-<img src="images/architecture_diagram.png" alt="Architecture" width="80%" height="80%">
+<img src="images/barracuda-cloudgen-waf-architecture-diagram.png" alt="Architecture" width="80%" height="80%">
 </div>
 <div class="title">Figure 1. Quick Start architecture for CloudGen WAF on AWS</div>
 </div>
@@ -983,23 +970,26 @@ AWS Cloud.</p>
 <li>
 <p>A VPC configured with public and private subnets, according to AWS
 best practices, to provide you with your own virtual network on
-AWS. *</p>
+AWS.</p>
 </li>
-</ul>
-</div>
-<div class="paragraph">
+<li>
 <p>In the public subnets:</p>
-</div>
 <div class="ulist">
 <ul>
 <li>
-<p>A Network Load Balancer pointing to 2 WAF instances.</p>
+<p>A Network Load Balancer pointing to two Barracuda WAF instances.</p>
 </li>
 <li>
-<p>2 Barracuda WAF instances, in a AutoScaling group.</p>
+<p>Two Barracuda WAF instances, in a Auto Scaling group.</p>
 </li>
 <li>
-<p>A Nat gateway in each of the Availability Zones.</p>
+<p>A network address translation (NAT) gateway in each of the Availability Zones.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>An Amazon Simple Storage Service (Amazon S3) bucket for storing backup and restoration files.</p>
 </li>
 </ul>
 </div>
@@ -1170,18 +1160,17 @@ Certain Regions are available on an opt-in basis. See <a href="https://docs.aws.
 <div class="ulist">
 <ul>
 <li>
-<p>For those with existing Barracuda WAF Licenses, a Bring Your Own License option can be
-found at the following link <a href="https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986">BYOL</a>.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>If you selected the BYOL option place the license key in a S3 bucket in the account you are deploying in. Remember its location as you will need to place it the parameter "CudaLicenseSubDir" during deployment.</p>
+<p>For those with existing Barracuda WAF Licenses, read about the Bring Your Own License (BYOL) option in the <a href="https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986">Barracuda CloudGen WAF for AWS - BYOL</a> topic.</p>
 </li>
 </ul>
 </div>
-</li>
+<div class="paragraph">
+<p>When using the BYOL option, place the license key in an Amazon S3 bucket in your deployment account. Remember the location, as you will need to add it to the <code>CudaLicenseSubDir</code> parameter during deployment.</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p>The "Pay As You Go" option which can be found at the following link <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&amp;sr=0-3&amp;ref_=srh_res_product_title">PAYG</a>.</p>
+<p>If you don&#8217;t have a license, you can use the Pay As You Go (PAYG) option. For more information, including details about a trial license, see <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&amp;sr=0-3&amp;ref_=srh_res_product_title">Barracuda CloudGen WAF for AWS - PAYG</a>.</p>
 </li>
 </ul>
 </div>
@@ -1205,9 +1194,7 @@ found at the following link <a href="https://aws.amazon.com/marketplace/pp/Barra
 <p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and CloudGen WAF settings, as discussed later in this guide.</p>
 </div>
 <div class="paragraph">
-<p>Additionaly if you have a backup file from an existing Barracuda
-CloudGen WAF deployment you can provide this file during the deployment
-phase to configure your new WAF instances.</p>
+<p>Additionaly if you have a backup file from an existing CloudGen WAF deployment, you can provide this file during the deployment phase to configure your new WAF instances.</p>
 </div>
 </div>
 </div>
@@ -1232,7 +1219,7 @@ phase to configure your new WAF instances.</p>
 <div class="sect2">
 <h3 id="_subscribe_to_the_cloudgen_waf_ami">Subscribe to the CloudGen WAF AMI</h3>
 <div class="paragraph">
-<p>This Quick Start requires a subscription to the AMI for CloudGen WAF in AWS Marketplace.</p>
+<p>This Quick Start requires a subscription to the Amazon Machine Image (AMI) for CloudGen WAF in AWS Marketplace.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1240,14 +1227,14 @@ phase to configure your new WAF instances.</p>
 <p>Sign in to your AWS account.</p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1590536656862&amp;sr=0-2&amp;ref_=srh_res_product_title">Open the page for the CloudGen WAF AMI in AWS Marketplace</a>, and then choose <strong>Continue to Subscribe</strong>.</p>
+<p>Open the page for the CloudGen WAF AMI in <a href="https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1590536656862&amp;sr=0-2&amp;ref_=srh_res_product_title">AWS Marketplace</a>, and then choose <strong>Continue to Subscribe</strong>.</p>
 </li>
 <li>
 <p>Review the terms and conditions for software usage, and then choose <strong>Accept Terms</strong>.<br>
 A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the <a href="https://aws.amazon.com/marketplace/help/200799470" target="_blank" rel="noopener">AWS Marketplace documentation</a>.</p>
 </li>
 <li>
-<p>When the subscription process is complete, exit out of AWS Marketplace without further action. <strong>Do not</strong> provision the software from AWS Marketplace—the Quick Start deploys the AMI for you.</p>
+<p>When the subscription process is complete, exit out of AWS Marketplace without further action. <strong>Do not</strong> provision the software from AWS Marketplace; the Quick Start deploys the AMI for you.</p>
 </li>
 </ol>
 </div>
@@ -1280,12 +1267,12 @@ You are responsible for the cost of the AWS services used while running this Qui
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy CloudGen WAF into a new VPC on AWS</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/JjJEy" target="_blank" rel="noopener">Deploy CloudGen WAF into a new VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/qBea3" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy CloudGen WAF into an existing VPC on AWS</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/PM7vR" target="_blank" rel="noopener">Deploy CloudGen WAF into an existing VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/vmwg7" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1307,7 +1294,7 @@ If you’re deploying CloudGen WAF into an existing VPC, make sure that your VPC
 <div class="olist arabic">
 <ol class="arabic" start="2">
 <li>
-<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for CloudGen WAF will be built. The template is launched in the us-east-1 Region by default.</p>
+<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for CloudGen WAF is built. The template is launched in the us-east-1 Region by default.</p>
 </li>
 </ol>
 </div>
@@ -1355,22 +1342,34 @@ If you’re deploying CloudGen WAF into an existing VPC, make sure that your VPC
 <div class="ulist">
 <ul>
 <li>
-<p>Note the Public IP address of the newly deployed Barracuda CloudGen WAF. Open the browser and enter the noted IP with port 8000 for HTTP: <a href="http://IP-Address:8000" class="bare">http://IP-Address:8000</a>. If the license agreement page is displayed then scroll to the bottom and click Accept.</p>
+<p>Note the public IP address of the new CloudGen WAF deployment. Open a browser and enter the IP address with port 8000 for HTTP (example: <a href="http://IP-Address:8000" class="bare">http://IP-Address:8000</a>). If the license agreement page appears, scroll to the bottom and choose <strong>Accept</strong>.</p>
 </li>
 <li>
-<p>At the Admin login page use “admin” as the username and the instance-ID as the password. NOTE: each WAF will have its own admin password so be sure to match the instance-ID with the instance’s elastic IP address. On the CloudGen WAF GUI go to Advanced, System Configuration and set Show Advanced Settings to Yes. Click the green Save button.</p>
+<p>On the administrator login page, use <code>admin</code> as the user name and the instance-ID as the password.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Each WAF has its own admin password, so be sure to match the instance-ID with the instance’s elastic IP address. On the CloudGen WAF UI, go to <strong>Advanced &gt; System Configuration</strong> and set the <strong>Show Advanced Settings</strong> option to <strong>Yes</strong>. Choose the green <strong>Save</strong> button.
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="images/advanced_settings_images3.png" alt="Advanced Settings" width="50%" height="50%">
+<img src="images/advanced_settings_images3.png" alt="advanced settings images3" width="50%" height="50%">
 </div>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>On the CloudGen WAF GUI go to Basic, Services. You should see a WAF service matching the WAFServiceName and WAFServicePort parameters from the CFT stack. If you specified an application server port and IP you will see it listed under the service. Example:</p>
+<p>On the CloudGen WAF UI, navigate to <strong>Basic &gt; Services</strong>. You should see a WAF service matching the <code>WAFServiceName</code> and <code>WAFServicePort</code> parameters from the CloudFormation stack. If you specified an application server port and IP address, you will see them listed as a service:</p>
 </li>
 </ul>
 </div>
@@ -1382,7 +1381,7 @@ If you’re deploying CloudGen WAF into an existing VPC, make sure that your VPC
 <div class="ulist">
 <ul>
 <li>
-<p>The application server IP address and port can be changed if needed. You may also specify a hostname instead of IP address. Under the column Actions click the Edit link for the application server. In the identifier drop-down select IP Address or Hostname and then specify the corresponding value. Here is an example using an internal load balancer DNS name:</p>
+<p>You can change the application server IP address and port, if needed. You can also specify a host name instead of an IP address. Under the <strong>Actions</strong> column, choose the <strong>Edit</strong> link for the application server. In the identifier drop-down list, select <strong>IP Address</strong> or <strong>Hostname</strong> and then specify the corresponding value. Here is an example using an internal load balancer DNS name:</p>
 </li>
 </ul>
 </div>
@@ -1394,10 +1393,10 @@ If you’re deploying CloudGen WAF into an existing VPC, make sure that your VPC
 <div class="ulist">
 <ul>
 <li>
-<p>You will need a working application server (i.e. “origin server”) in order to fully test the WAF functionality. For simple testing use HTTP on port 80. Browse to the DNS name of the load balancer created by the stack deployment. In the AWS console navigate to EC2 &gt; Load Balancers and select the load balancer. On the Description tab locate the DNS name and click the copy icon to copy the load balancer DNS name to the clipboard. Open a new browser tab and paste the DNS name into the address bar.</p>
+<p>You must have a working application server (i.e., origin server) to fully test the WAF functionality. For simple testing, use HTTP on port 80. Browse to the DNS name of the load balancer created by the stack deployment. In the AWS Console, navigate to <strong>EC2 &gt; Load Balancers</strong> and select the load balancer. On the <strong>Description</strong> tab, locate the DNS name and select the copy icon to copy the load balancer DNS name to the clipboard. Open a new browser tab and paste the DNS name into the address bar.</p>
 </li>
 <li>
-<p>View website access activity in the WAF UI. Navigate to BASIC &gt; Access Logs to see all web requests that have passed through the WAF. Navigate to BASIC &gt; Web Firewall Logs to see all requests that have been blocked, cloaked, or logged as suspicious. Initially the WAF is in passive mode, so bad traffic is marked as LOGGED.</p>
+<p>View website access activity in the WAF UI. Navigate to <strong>BASIC &gt; Access Logs</strong> to see the web requests that have passed through the WAF. Navigate to <strong>BASIC &gt; Web Firewall Logs</strong> to see requests that have been blocked, cloaked, or logged as suspicious. Initially the WAF is in passive mode, so bad traffic is marked as LOGGED.</p>
 </li>
 <li>
 <p>Additional information on configuring the WAF can be found at Securing HTTP/HTTPS Traffic</p>
@@ -1407,42 +1406,22 @@ If you’re deploying CloudGen WAF into an existing VPC, make sure that your VPC
 </div>
 </div>
 <div class="sect1">
-<h2 id="_best_practices_for_using_cloudgen_waf_on_aws">Best practices for using CloudGen WAF on AWS</h2>
+<h2 id="_configure_ha_clusters_for_seamless_failover">Configure HA clusters for seamless failover</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Cluster for High Availability (HA) and redundancy</strong></p>
-</div>
-<div class="paragraph">
-<p>Due to the 24/7 nature of web traffic, it is important that any
-deployments in line with the data path have added redundancy. The
-Barracuda Web Application Firewalls configured in HA clusters will
-automatically synchronize security and network configurations between
-the clusters to provide seamless failover in response to disruptions.
-This is achieved by creating an autoscaling group of WAF clusters. IF
-you are using the BYOL template you will need licenses for the max
-number of instances you anticipate on scaling to. For more information
-on clustering, see <a href="https://campus.barracuda.com/doc/4259911/">High
-Availability</a>.</p>
+<p>Due to the 24/7 nature of web traffic, deployments that are in line with the data path should have added redundancy. The Barracuda WAFs configured in high availability (HA) clusters automatically synchronize security and network configurations between the clusters to provide seamless failover in response to disruptions. This occurs by creating an Auto Scaling group of WAF clusters. If you are using the Buy Your Own License (BYOL) template, you will need licenses for the maximum number of instances to which you will scale. For more information
+on clustering, see <a href="https://campus.barracuda.com/doc/4259911/">High Availability</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_security">Security</h2>
+<h2 id="_configure_security">Configure security</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Barracuda Web Application Firewall provides features to implement
-user authentication and access control. You can create a virtual private
-network (VPN) tunnel to control user access to websites. The user-access
-features allow you to specify who can access your websites and what
-access privileges each user has. By combining these with SSL encryption,
-you can create a secure VPN tunnel to your websites.</p>
+<p>The Barracuda WAF provides features to implement user authentication and access control. You can create a VPN tunnel to control user access to websites. The user-access features allow you to specify who can access your websites and what access privileges each user has. By combining these with SSL encryption, you can create a secure VPN tunnel to your websites.</p>
 </div>
 <div class="paragraph">
-<p>Authentication can be implemented only for HTTP or HTTPS services. The
-authentication process requires users to provide a valid name and
-password to gain access. A validated user has qualified access to the
-website; that is, the data and services this user can access depend on
-his or her authorization privileges.</p>
+<p>You can implement authentication only for HTTP or HTTPS services. The authentication process requires users to provide a valid name and password to gain access. A validated user has qualified access to the website; the data and services this user can access depend on his or her authorization privileges.</p>
 </div>
 </div>
 </div>
@@ -1453,7 +1432,7 @@ his or her authorization privileges.</p>
 <p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, we recommend that you relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. (This setting is under <strong>Advanced</strong> in the AWS CloudFormation console, <strong>Options</strong> page.) With this setting, the stack’s state is retained and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
+<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. This setting is under <strong>Advanced</strong> in the AWS CloudFormation console on the <strong>Configure stack options</strong> page. With this setting, the stack’s state is retained and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1474,7 +1453,7 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <p><strong>Q.</strong> I encountered a size limitation error when I deployed the AWS CloudFormation templates.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information, see <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html">AWS CloudFormation quotas</a> on the AWS website.</p>
+<p><strong>A.</strong> Launch the Quick Start templates from the links in this guide or from another Amazon S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information, see <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html">AWS CloudFormation quotas</a> on the AWS website.</p>
 </div>
 </div>
 </div>
