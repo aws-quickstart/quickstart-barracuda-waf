@@ -8,14 +8,14 @@
 ifdef::marketplace_subscription[]
 === Subscribe to the {partner-product-short-name} AMI
 
-This Quick Start requires a subscription to the AMI for {partner-product-short-name} in AWS Marketplace.
+This Quick Start requires a subscription to the Amazon Machine Image (AMI) for {partner-product-short-name} in AWS Marketplace.
 
 . Sign in to your AWS account.
-. {marketplace_listing_url}[Open the page for the {partner-product-short-name} AMI in AWS Marketplace], and then choose *Continue to Subscribe*.
+. Open the page for the {partner-product-short-name} AMI in {marketplace_listing_url}[AWS Marketplace], and then choose *Continue to Subscribe*.
 . Review the terms and conditions for software usage, and then choose *Accept Terms*. +
   A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the https://aws.amazon.com/marketplace/help/200799470[AWS Marketplace documentation^].
 
-. When the subscription process is complete, exit out of AWS Marketplace without further action. *Do not* provision the software from AWS Marketplace—the Quick Start deploys the AMI for you.
+. When the subscription process is complete, exit out of AWS Marketplace without further action. *Do not* provision the software from AWS Marketplace; the Quick Start deploys the AMI for you.
 endif::marketplace_subscription[]
 // \Not to be edited
 
@@ -27,11 +27,11 @@ NOTE: You are responsible for the cost of the AWS services used while running th
 
 [cols=2*]
 |===
-^|http://qs_launch_permalink[Deploy {partner-product-short-name} into a new VPC on AWS^]
-^|http://qs_template_permalink[View template^]
+^|https://fwd.aws/JjJEy[Deploy {partner-product-short-name} into a new VPC on AWS^]
+^|https://fwd.aws/qBea3[View template^]
 
-^|http://qs_launch_permalink[Deploy {partner-product-short-name} into an existing VPC on AWS^]
-^|http://qs_template_permalink[View template^]
+^|https://fwd.aws/PM7vR[Deploy {partner-product-short-name} into an existing VPC on AWS^]
+^|https://fwd.aws/vmwg7[View template^]
 |===
 
 // Adapt the following warning to your Quick Start.
@@ -40,7 +40,7 @@ WARNING: If you’re deploying {partner-product-short-name} into an existing VPC
 Each deployment takes about {deployment_time} to complete.
 
 [start=2]
-. Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for {partner-product-short-name} will be built. The template is launched in the {default_deployment_region} Region by default.
+. Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for {partner-product-short-name} is built. The template is launched in the {default_deployment_region} Region by default.
 
 // *Note:* This deployment includes Amazon EFS, which isn’t currently supported in all AWS Regions. For a current list of supported Regions, see the https://docs.aws.amazon.com/general/latest/gr/elasticfilesystem.html[endpoints and quotas webpage].
 
