@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This entrypoint template deploys 2 Barracuda CloudGen WAFs for a multi-AZ, multi-tier
-  deployment. It deploys to a new VPC behind an ALB. The cluster is configured to use an S3 bucket for storage.
+Description: This entrypoint template deploys two Barracuda CloudGen WAFs for a multi-AZ, multi-tier
+  deployment. It deploys to a new VPC behind an Application Load Balancer (ALB). The cluster is configured to use an S3 bucket for storage.
   Attention **WARNING** This template creates EC2 instances and related resources. You will be billed for
   the AWS resources used if you create a stack from this template. (qs-1r90s0gb8)
 Metadata:
