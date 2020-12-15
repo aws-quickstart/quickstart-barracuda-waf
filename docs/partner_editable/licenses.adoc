@@ -1,26 +1,19 @@
 // Include details about the license and how they can sign up. If no license is required, clarify that.
 
-This Quick Start requires a license for Barracuda CloudGen WAF for AWS.
-There are multiple licensing options to choose from. For those with
-existing Barracuda WAF Licenses, a Bring Your Own License option can be
-found at the following link
-https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986[BYOL].
-There is also a Pay As You Go option which can be found at the following
-link
-https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&sr=0-3&ref_=srh_res_product_title[PAYG].
+This Quick Start requires a license for {partner-product-name} for AWS.
+Multiple licensing options are available. For those with
+existing Barracuda WAF licenses, a Bring Your Own License (BYOL) option is available. For details, see https://aws.amazon.com/marketplace/pp/Barracuda-Networks-Inc-Barracuda-CloudGen-WAF-for-/B014GEC986[Barracuda CloudGen WAF for AWS - BYOL].
+A Pay As You Go (PAYG) option is also available. For details, see https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1592267518468&sr=0-3&ref_=srh_res_product_title[Barracuda CloudGen WAF for AWS - PAYG].
 To use the Quick Start in your production environment, sign up for a
-license at one of the above links before you launch the Quick Start. If
-you selected the BYOL option place the license key in an S3 bucket and
+license at one of the sites above before you launch the Quick Start. If
+you selected the BYOL option, place the license key in an Amazon Simple Storage Service (Amazon S3) bucket and
 remember its location.
 
 If you don't have a license, you can deploy the Quick Start with a trial
-license available in the PAYG option above. The trial license gives you
+license that is available in the PAYG option. The trial license gives you
 30 days of free usage, including usage in a production environment.
 After this time, you can upgrade to a production license by following
-the instructions at the
-https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&sr=0-2&ref_=srh_res_product_title[AWS Marketplace].
-
-
+the instructions on the https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&sr=0-2&ref_=srh_res_product_title[Barracuda CloudGen WAF for AWS - PAYG] site.
 
 // Or, if the deployment uses an AMI, update this paragraph. If it doesn’t, remove the paragraph.
-_<AMI information>The Quick Start requires a subscription to the Amazon Machine Image (AMI) for {partner-product-short-name}, which is available from https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&sr=0-2&ref=srh_res_product_title[AWS Marketplace]. Additional pricing, terms, and conditions may apply. For instructions, see link:#_subscribe_to_the_cloudgen_waf_ami[Subscribe to the CloudGen WAF AMI] in the deployment section._
+The Quick Start requires a subscription to the Amazon Machine Image (AMI) for {partner-product-short-name}, which is available from the https://aws.amazon.com/marketplace/pp/B014GEC526?qid=1588809962120&sr=0-2&ref=srh_res_product_title[Barracuda CloudGen WAF for AWS - PAYG] site. Additional pricing, terms, and conditions may apply. For instructions, see link:#_subscribe_to_the_cloudgen_waf_ami[Subscribe to the CloudGen WAF AMI] in the deployment section.
