@@ -1,5 +1,5 @@
 
-=== Launching into a new VPC
+=== Parameters for launching into a new VPC
 include::barracuda-waf-entrypoint-new-vpc.template.adoc[]
 
 === Parameters for launching into a existing VPC
