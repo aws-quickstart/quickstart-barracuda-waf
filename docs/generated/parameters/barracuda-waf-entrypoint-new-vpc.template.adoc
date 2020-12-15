@@ -1,64 +1,64 @@
 
-.VPC Configuration
+.VPC configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Availability Zones
 (`AvailabilityZones`)|`**__Requires input__**`|The list of Availability Zones to use for the subnets in the VPC. Three Availability Zones are used for this deployment, and the logical order of your selections is preserved.|VPC CIDR
-(`VPCCIDR`)|`10.0.0.0/16`|CIDR block for the VPC|Private subnet 1 CIDR
-(`PrivateSubnet1ACIDR`)|`10.0.0.0/19`|CIDR block for private subnet 1A located in Availability Zone 1|Private subnet 2 CIDR
-(`PrivateSubnet2ACIDR`)|`10.0.32.0/19`|CIDR block for private subnet 2A located in Availability Zone 2|Public subnet 1 CIDR
-(`PublicSubnet1CIDR`)|`10.0.128.0/20`|CIDR block for the public (DMZ) subnet 1 located in Availability Zone 1|Public subnet 2 CIDR
-(`PublicSubnet2CIDR`)|`10.0.144.0/20`|The CIDR block for the public (DMZ) subnet 2 located in Availability Zone 2
+(`VPCCIDR`)|`10.0.0.0/16`|CIDR block for the VPC.|Private subnet 1 CIDR
+(`PrivateSubnet1ACIDR`)|`10.0.0.0/19`|CIDR block for private subnet 1A located in Availability Zone 1.|Private subnet 2 CIDR
+(`PrivateSubnet2ACIDR`)|`10.0.32.0/19`|CIDR block for private subnet 2A located in Availability Zone 2.|Public subnet 1 CIDR
+(`PublicSubnet1CIDR`)|`10.0.128.0/20`|CIDR block for the public (DMZ) subnet 1 located in Availability Zone 1.|Public subnet 2 CIDR
+(`PublicSubnet2CIDR`)|`10.0.144.0/20`|The CIDR block for the public (DMZ) subnet 2 located in Availability Zone 2.
 |===
-.WAF Configuration
+.WAF configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|WAF servers instance type
-(`WAFInstanceType`)|`m4.large`|Choose the instance type to use for this AutoScale group|Key pair name
-(`KeyPairName`)|`**__Requires input__**`|The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches|Service being configured on the WAF
-(`WAFServiceName`)|`**__Requires input__**`|Specify the Service name to be configured on the Barracuda Web Application Firewall|Service Port being configured on the WAF
-(`WAFServicePort`)|`80`|Specify the service port to be configured on the Barracuda Web Application Firewall. This the port that is exposed to the outside world. Default is 80.|Application server port
-(`AppServerPort`)|`**__Requires input__**`|Specify the port number on which the web application responds. This is the port that the Barracuda Web Application Firewall will use to connect to the application|Application server IP
-(`AppServerIP`)|`**__Requires input__**`|Specify the server IP (inside the VPC) to be configured on the Barracuda Web Application Firewall; alternatively, you can also enter the FQDN of the instance or a downstream ELB to connect to.|Default domain to be used
-(`DefaultDomain`)|`example.com`|Enter the default domain |Minimum number of WAF instances
-(`ScalingMinSize`)|`1`|Enter the minimum number of WAF instances (1-20) to be available in the AutoScale Group|Maxium number of WAF instances
-(`ScalingMaxSize`)|`4`|Enter the maximum number of WAF instances (2-20) that can be created in the AutoScale Group|Envirnoment name
+(`WAFInstanceType`)|`m4.large`|Choose the instance type to use for this Auto Scaling group.|Key pair name
+(`KeyPairName`)|`**__Requires input__**`|The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches.|Service being configured on the WAF
+(`WAFServiceName`)|`**__Requires input__**`|Specify the service name to be configured on the Barracuda WAF.|Service port being configured on the WAF
+(`WAFServicePort`)|`80`|Specify the service port to be configured on the Barracuda WAF. This port is exposed to the outside world. The default number is 80.|Application server port
+(`AppServerPort`)|`**__Requires input__**`|Specify the port number on which the web application responds. Barracuda WAF uses this port to connect to the application.|Application server IP
+(`AppServerIP`)|`**__Requires input__**`|Specify the server IP address (inside the VPC) to be configured on the Barracuda WAF. Or, you can enter the fully qualified domain name (FQDM) of the instance or a downstream Elastic Load Balancing (ELB).|Default domain to be used
+(`DefaultDomain`)|`example.com`|Enter the default domain.|Minimum number of WAF instances
+(`ScalingMinSize`)|`1`|Enter the minimum number of WAF instances (1-20) that are available in the Auto Scaling group.|Maxium number of WAF instances
+(`ScalingMaxSize`)|`4`|Enter the maximum number of WAF instances (2-20) that can be created in the Auto Scaling group.|Envirnoment name
 (`EnvironmentName`)|`**__Requires input__**`|An environment name that is prefixed to resource names|WAF license type
-(`WAFLicenseModel`)|`BYOL`|Select the proper licensing type for your deployment. The options are "Bring Your Own License (BYOL)" or "Pay as You Go (PAYG)". The default is BYOL.
+(`WAFLicenseModel`)|`BYOL`|Select the licensing type for your deployment. Options include Bring Your Own License (BYOL) or Pay as You Go (PAYG). The default value is BYOL.
 |===
-.Admin Configuration
+.Administrator configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Administrator name
 (`AdministratorName`)|`**__Requires input__**`|NO_DESCRIPTION|Administrator email address
 (`AdministratorEmailID`)|`**__Requires input__**`|NO_DESCRIPTION|Administrator company
-(`AdministratorCompany`)|`None`|By entering the Name, Email address and Company (if applicable) above you agree to terms and conditions outlined in the product End User License Agreement (https://www.barracuda.com/legal/software_license_agreement) and Privacy Policy (https://www.barracuda.com/legal/privacy).|Email for notifications
-(`NotificationEmail`)|`**__Requires input__**`|Enter a valid email address to send AutoSclaing event notifications
+(`AdministratorCompany`)|`None`|By entering the name, email address, and company (if applicable), you agree to the terms and conditions outlined in the product End User License Agreement (https://www.barracuda.com/legal/software_license_agreement) and Privacy Policy (https://www.barracuda.com/legal/privacy).|Email for notifications
+(`NotificationEmail`)|`**__Requires input__**`|Enter a valid email address to send Auto Scaling event notifications.
 |===
 .WAF storage configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|S3 bucket for WAF licenses
 (`LicenseBucket`)|`**__Requires input__**`|S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|The license directory
-(`CudaLicenseSubDir`)|`**__Blank string__**`|Specify the folder on the specified license S3 Bucket which contains the BYOL license File. Leave blank if there is no specific folder for licenses on the S3 Bucket. Examples: barracuda/licenses(Two level folder structure), barracudabyollicenses(One level folder structure).|Bootstrapping sub directory
-(`CudaBackupSubDir`)|`**__Blank string__**`|Specify the folder on the specified Bootstrapping S3 bucket which contains the backup file. Leave blank if there is no specific folder for backups on the S3 bucket. Examples: barracuda/wafbackups(Two level folder structure), barracudawafbackup(One level folder structure).|Bootstrapping S3 bucket
-(`BootstrappingS3Bucket`)|`**__Blank string__**`|S3 bucket which has the backups in it.|Backup file name
-(`BackupFileName`)|`**__Blank string__**`|Backup filename which needs to be restored on WAF when it boots up. Ex. BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak
+(`CudaLicenseSubDir`)|`**__Blank string__**`|Specify the folder on the specified license S3 bucket that contains the BYOL license file. Leave blank if no specific folder exists for licenses on the S3 Bucket. Examples include barracuda/licenses (two-level folder structure) and barracudabyollicenses (one-level folder structure).|Bootstrapping subdirectory
+(`CudaBackupSubDir`)|`**__Blank string__**`|Specify the folder on the specified bootstrapping S3 bucket that contains the backup file. Leave blank if no specific folder exists for backups on the S3 bucket. Examples include barracuda/wafbackups (two-level folder structure) and barracudawafbackup (one-level folder structure).|Bootstrapping S3 bucket
+(`BootstrappingS3Bucket`)|`**__Blank string__**`|The S3 bucket that stores backups.|Backup file name
+(`BackupFileName`)|`**__Blank string__**`|The backup file name that must be restored on the WAF when it boots up (for example, BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak).
 |===
 .AWS Quick Start configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Quick Start S3 bucket name
-(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Quick Start S3 bucket region
-(`QSS3BucketRegion`)|`us-east-1`|The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.|Quick Start S3 key prefix
-(`QSS3KeyPrefix`)|`quickstart-barracuda-waf/`|S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
+(`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Quick Start S3 bucket Region
+(`QSS3BucketRegion`)|`us-east-1`|AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See https://aws-quickstart.github.io/option1.html.|Quick Start S3 key prefix
+(`QSS3KeyPrefix`)|`quickstart-barracuda-waf/`|S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html and https://aws-quickstart.github.io/option1.html.
 |===
-.Proxy Configuration
+.Proxy configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Proxy server IP
-(`ProxyServerIP`)|`**__Blank string__**`|Enter the IP of your proxy server|Proxy server port
-(`ProxyServerPort`)|`**__Blank string__**`|Enter the port of your proxy server|Proxy server username
-(`ProxyServerUsername`)|`**__Blank string__**`|Enter the username for your proxy server. Leave it empty in case you dont have any username for your proxy server.|Proxy server password
-(`ProxyServerPassword`)|`**__Blank string__**`|Enter the password for your proxy server. Leave it empty in case you dont have any password for your proxy server.
+(`ProxyServerIP`)|`**__Blank string__**`|Enter the IP address of your proxy server.|Proxy server port
+(`ProxyServerPort`)|`**__Blank string__**`|Enter the port number of your proxy server.|Proxy server user name
+(`ProxyServerUsername`)|`**__Blank string__**`|Enter the user name for your proxy server. Leave it empty if no user name exists.|Proxy server password
+(`ProxyServerPassword`)|`**__Blank string__**`|Enter the password for your proxy server. Leave it empty if no password exists.
 |===
