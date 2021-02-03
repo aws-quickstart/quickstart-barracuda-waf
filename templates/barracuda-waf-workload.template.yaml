@@ -1,5 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: BWAF 10.1 BYOL (qs-1r90s0gdc)
+Metadata:
+  QSLint:
+    Exclusions: [W9002, W9003, W9004, W9006]
 Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names. This string can include
@@ -200,48 +203,51 @@ Parameters:
     Default: 'BYOL'
 Mappings:
   RegionMap:
+    AMI:
+      PAYG: CudaWAF-p5-vm4.6.3-fw10.1.0.015-20200629-PAYG
+      BYOL: CudaWAF-p5-vm4.6.4-fw10.1.1.016-20210124-vmr-BYOL
     us-east-1:
-      PAYG: ami-04f0a227aebdc7f98
-      BYOL: ami-03fe3d14505dfefdc
+      PAYG: ami-05a33eb12b776c506
+      BYOL: ami-034543d76ef7650a8
     us-east-2:
-      PAYG: ami-0fd76f5222cdf861b
-      BYOL: ami-0db89527496f6a87c
+      PAYG: ami-045e816b1e02b7fef
+      BYOL: ami-0225a73ef8088e3ee
     us-west-1:
       PAYG: ami-0093cec155775c3d5
-      BYOL: ami-0905e9dc8bb4b91c3
+      BYOL: ami-05a27e61529c3671a
     us-west-2:
-      PAYG: ami-0632b7e34009e52b7
-      BYOL: ami-070c2823862ff8ea8
+      PAYG: ami-0fcb0e67ba0ebe5dc
+      BYOL: ami-00940bc5f7caf92b8
     sa-east-1:
       PAYG: ami-0fe8befbac70769dd
       BYOL: ami-0d589d10080d50f15
     ca-central-1:
-      PAYG: ami-07da3622b4219a52c
-      BYOL: ami-0bbc0d3b5501bb030
+      PAYG: ami-098ddbd119645a022
+      BYOL: ami-017cb89c18dc19aab
     eu-central-1:
-      PAYG: ami-06d9354e07474133c
-      BYOL: ami-02c48ef8defdf0379
+      PAYG: ami-02b16240bbaf7e9ab
+      BYOL: ami-081825f8e52130748
     eu-west-1:
-      PAYG: ami-08baefd8fc513db66
-      BYOL: ami-0bdc3bc93d8d4d6e2
+      PAYG: ami-0f1c912335d707bcb
+      BYOL: ami-08646fe841b64d6ce
     eu-west-2:
-      PAYG: ami-0dfdd307c88981449
-      BYOL: ami-0262b6949aa7f1529
+      PAYG: ami-0725638dde6875652
+      BYOL: ami-01e69c4baf54bc744
     ap-southeast-1:
-      PAYG: ami-04dcc1951b653ef8f
-      BYOL: ami-0b7e14f3f77f1f55b
+      PAYG: ami-0fcd599e26bba5ee6
+      BYOL: ami-07937237ea147620a
     ap-southeast-2:
-      PAYG: ami-05d3bf5b984cf2b4d
-      BYOL: ami-01dcf361a2d252a63
+      PAYG: ami-00ac1459606977d3b
+      BYOL: ami-08ab64d96c4c3d97d
     ap-northeast-1:
-      PAYG: ami-0b2638d032763db7c
-      BYOL: ami-040482863065d9111
+      PAYG: ami-0e01a67faebc272c2
+      BYOL: ami-0077e528ae43498f5
     ap-northeast-2:
-      PAYG: ami-091252a4458758104
-      BYOL: ami-0121574171fcb226a
+      PAYG: ami-086f94398decf5ede
+      BYOL: ami-00e2b2ae61dce213f
     ap-south-1:
-      PAYG: ami-077e000c1003592b6
-      BYOL: ami-0e458de57cabe8f84
+      PAYG: ami-084dd46be15f52c7d
+      BYOL: ami-09fb42d83e8bb92b5
   BandwidthScaleUp:
     medium:
       bandwidth: '8750000'
