@@ -31,6 +31,13 @@ Parameters:
         on the S3 Bucket. Examples: Barracuda/WAFBackups(Two level folder structure),
         BarracudaWAFBackup(One level folder structure).'
     Default: ''
+  S3BucketDeletionPolicy:
+    Description: This sets the bucket deletion policy for the BootStrap, Cluster and AutoScaling buckets that are created as part of the Quick Start.
+    AllowedValues:
+      - 'Delete'
+      - 'Retain'
+    Default: 'Retain'
+    Type: String
   BackupFileName:
     Type: String
     Description: Backup filename which needs to be restored on WAF when it boots up. Ex. BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak
@@ -270,6 +277,9 @@ Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   UsingBYOL: !Not [!Equals [!Ref LicenseBucket, "AWS::NoValue" ]]
   PAYGSelected: !Equals [!Ref WAFLicenseModel, 'PAYG']
+  Retainbuckets: !Equals [!Ref S3BucketDeletionPolicy, 'Retain']
+  Deletebuckets: !Equals [!Ref S3BucketDeletionPolicy, 'Delete']
+  DefaultBootStrap: !Equals [!Ref BootstrappingS3Bucket, '']
 Resources:
   BWAFAutoScalingS3AccessRole:
     Type: AWS::IAM::Role
@@ -296,10 +306,10 @@ Resources:
                 Resource:
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}
-                    - Bucket: !Ref ClusterBucket
+                    - Bucket: !If [Retainbuckets, !Ref ClusterBucket, !Ref ClusterBucketdeleteable]
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}
-                    - Bucket: !Ref BootstrapBucket
+                    - Bucket: !If [Retainbuckets, !Ref BootstrapBucket, !Ref BootstrapBucketdeleteable]
               - Sid: GetObject
                 Effect: Allow
                 Action:
@@ -309,10 +319,10 @@ Resources:
                 Resource:
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}/*
-                    - Bucket: !Ref ClusterBucket
+                    - Bucket: !If [Retainbuckets, !Ref ClusterBucket, !Ref ClusterBucketdeleteable]
                   - !Sub
                     - arn:${AWS::Partition}:s3:::${Bucket}/*
-                    - Bucket: !Ref BootstrapBucket
+                    - Bucket: !If [Retainbuckets, !Ref BootstrapBucket, !Ref BootstrapBucketdeleteable]
         - PolicyName: CloudWatchLogsFullAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -343,6 +353,7 @@ Resources:
         - Endpoint: !Ref 'NotificationEmail'
           Protocol: email
   AutoScalingS3Bucket:
+    Condition: Retainbuckets
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
@@ -356,6 +367,7 @@ Resources:
               SSEAlgorithm: AES256
       BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-autoscaling
   ClusterBucket:
+    Condition: Retainbuckets
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
@@ -369,9 +381,52 @@ Resources:
               SSEAlgorithm: AES256
       BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-cluster
   BootstrapBucket:
+    Condition: Retainbuckets
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-bootstrap
+  AutoScalingS3Bucketdeleteable:
+    Condition: Deletebuckets
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-autoscaling
+  ClusterBucketdeleteable:
+    Condition: Deletebuckets
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !Sub ${EnvironmentName}-${WAFServiceName}-barracuda-cluster
+  BootstrapBucketdeleteable:
+    Condition: Deletebuckets
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
     Properties:
       AccessControl: Private
       VersioningConfiguration:
@@ -516,6 +571,7 @@ Resources:
               fi
             fi
           - WAFServerIP: curl http://169.254.169.254/latest/meta-data/local-ipv4
+            ClusterBucket: !If [Retainbuckets, !Ref ClusterBucket, !Ref ClusterBucketdeleteable]
   BWAFAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:

@@ -45,6 +45,7 @@ Metadata:
           - CudaLicenseSubDir
           - CudaBackupSubDir
           - BootstrappingS3Bucket
+          - S3BucketDeletionPolicy
           - BackupFileName
       - Label:
           default: AWS Quick Start configuration
@@ -100,6 +101,8 @@ Metadata:
         default: Bootstrapping subdirectory
       BackupFileName:
         default: Backup file name
+      S3BucketDeletionPolicy:
+        default: S3 bucket deletion policy
       VPCCIDR:
         default: VPC CIDR
       WAFInstanceType:
@@ -330,6 +333,13 @@ Parameters:
       - 'BYOL'
       - 'PAYG'
     Default: 'BYOL'
+  S3BucketDeletionPolicy:
+    Description: This sets the bucket deletion policy for the BootStrap, Cluster and AutoScaling buckets that are created as part of the Quick Start.
+    Type: String
+    AllowedValues:
+      - 'Delete'
+      - 'Retain'
+    Default: 'Retain'
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   UsingWAFBackups: !Not [!Equals [!Ref BackupFileName, "AWS::NoValue"]]
@@ -390,6 +400,7 @@ Resources:
         AdministratorCompany: !Ref AdministratorCompany
         LicenseBucket: !Ref LicenseBucket
         CudaLicenseSubDir: !Ref CudaLicenseSubDir
+        S3BucketDeletionPolicy: !Ref S3BucketDeletionPolicy
         WAFLicenseModel: !Ref WAFLicenseModel
         CudaBackupSubDir: !If [ UsingWAFBackups, !Ref CudaBackupSubDir, "AWS::NoValue" ]
         BackupFileName: !If [ UsingWAFBackups, !Ref BackupFileName, "AWS::NoValue" ]

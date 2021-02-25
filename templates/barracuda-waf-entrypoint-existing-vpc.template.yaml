@@ -48,6 +48,7 @@ Metadata:
       - LicenseBucket
       - CudaLicenseSubDir
       - CudaBackupSubDir
+      - S3BucketDeletionPolicy
       - BootstrappingS3Bucket
       - BackupFileName
     - Label:
@@ -91,6 +92,8 @@ Metadata:
         default: The license directory
       CudaBackupSubDir:
         default: Bootstrapping subdirectory
+      S3BucketDeletionPolicy:
+        default: S3 bucket deletion policy
       VPCID:
         default: VPC ID
       WAFInstanceType:
@@ -303,6 +306,13 @@ Parameters:
     Type: String
     Description: Backup file name that needs to be restored on WAF when it boots up (for example, BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak).
     Default: ''
+  S3BucketDeletionPolicy:
+    Description: This sets the bucket deletion policy for the BootStrap, Cluster and AutoScaling buckets that are created as part of the Quick Start.
+    Type: String
+    AllowedValues:
+      - 'Delete'
+      - 'Retain'
+    Default: 'Retain'
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   UsingWAFBackups: !Not [!Equals [!Ref BackupFileName, "AWS::NoValue"]]
@@ -342,6 +352,7 @@ Resources:
         AdministratorCompany: !Ref AdministratorCompany
         LicenseBucket: !Ref LicenseBucket
         CudaLicenseSubDir: !Ref CudaLicenseSubDir
+        S3BucketDeletionPolicy: !Ref S3BucketDeletionPolicy
         WAFLicenseModel: !Ref WAFLicenseModel
         CudaBackupSubDir: !If [ UsingWAFBackups, !Ref CudaBackupSubDir, "AWS::NoValue" ]
         BackupFileName: !If [ UsingWAFBackups, !Ref BackupFileName, "AWS::NoValue" ]

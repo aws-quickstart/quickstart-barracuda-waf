@@ -33,6 +33,7 @@ tests:
       NotificationEmail: override
       LicenseBucket: override
       CudaLicenseSubDir: override
+      S3BucketDeletionPolicy: 'Delete'
     regions:
     - us-east-1
     s3_bucket: ''
@@ -62,6 +63,7 @@ tests:
       LicenseBucket: override
       CudaLicenseSubDir: override
       WAFLicenseModel: 'PAYG'
+      S3BucketDeletionPolicy: 'Delete'
     regions:
     - us-east-2
     s3_bucket: ''
