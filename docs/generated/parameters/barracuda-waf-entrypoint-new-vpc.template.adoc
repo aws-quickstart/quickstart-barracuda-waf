@@ -42,7 +42,8 @@
 (`LicenseBucket`)|`**__Requires input__**`|S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|The license directory
 (`CudaLicenseSubDir`)|`**__Blank string__**`|Specify the folder on the specified license S3 bucket that contains the BYOL license file. Leave blank if no specific folder exists for licenses on the S3 Bucket. Examples include barracuda/licenses (two-level folder structure) and barracudabyollicenses (one-level folder structure).|Bootstrapping subdirectory
 (`CudaBackupSubDir`)|`**__Blank string__**`|Specify the folder on the specified bootstrapping S3 bucket that contains the backup file. Leave blank if no specific folder exists for backups on the S3 bucket. Examples include barracuda/wafbackups (two-level folder structure) and barracudawafbackup (one-level folder structure).|Bootstrapping S3 bucket
-(`BootstrappingS3Bucket`)|`**__Blank string__**`|The S3 bucket that stores backups.|Backup file name
+(`BootstrappingS3Bucket`)|`**__Blank string__**`|The S3 bucket that stores backups.|S3 bucket deletion policy
+(`S3BucketDeletionPolicy`)|`Retain`|This sets the bucket deletion policy for the BootStrap, Cluster and AutoScaling buckets that are created as part of the Quick Start.|Backup file name
 (`BackupFileName`)|`**__Blank string__**`|The backup file name that must be restored on the WAF when it boots up (for example, BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak).
 |===
 .AWS Quick Start configuration

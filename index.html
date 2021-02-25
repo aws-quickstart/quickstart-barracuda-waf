@@ -814,8 +814,8 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_faq">FAQ</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
-<li><a href="#_parameters_for_launching_into_a_existing_vpc">Parameters for launching into a existing VPC</a></li>
 <li><a href="#_parameters_for_launching_into_a_new_vpc">Parameters for launching into a new VPC</a></li>
+<li><a href="#_parameters_for_launching_into_a_existing_vpc">Parameters for launching into a existing VPC</a></li>
 </ul>
 </li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -1474,294 +1474,9 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </table>
 </div>
 <div class="sect2">
-<h3 id="_parameters_for_launching_into_a_existing_vpc">Parameters for launching into a existing VPC</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Network configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
-(<code>VPCID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of your existing VPC (e.g., vpc-0343606e).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 1 CIDR
-(<code>PrivateSubnet1ACIDR</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/19</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR block for private subnet 1A located in Availability Zone 1.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 2 CIDR
-(<code>PrivateSubnet2ACIDR</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.32.0/19</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR block for private subnet 2A located in Availability Zone 2.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet 1 ID
-(<code>PublicSubnet1ID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the public subnet in Availability Zone 1 in your existing VPC (e.g., subnet-a0246dcd).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet 2 ID
-(<code>PublicSubnet2ID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the public subnet in Availability Zone 2 in your existing VPC (e.g., subnet-b1236eea).</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Barracuda WAF EC2 configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Key pair name
-(<code>KeyPairName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAF servers instance type
-(<code>WAFInstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m4.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the instance type to use for this Auto Scaling group.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAF service
-(<code>WAFServiceName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the service name to be configured on the Barracuda WAF.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAF service port
-(<code>WAFServicePort</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>80</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the service port to be configured on the Barracuda WAF. This port is exposed to the outside world. The default value is 80.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator name
-(<code>AdministratorName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NO_DESCRIPTION</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator email address
-(<code>AdministratorEmailID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NO_DESCRIPTION</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator company
-(<code>AdministratorCompany</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>None</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">By entering the name, email address, and company (if applicable), you agree to terms and conditions outlined in the product End User License Agreement (<a href="https://www.barracuda.com/legal/software_license_agreement" class="bare">https://www.barracuda.com/legal/software_license_agreement</a>) and Privacy Policy (<a href="https://www.barracuda.com/legal/privacy" class="bare">https://www.barracuda.com/legal/privacy</a>).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Email for notifications
-(<code>NotificationEmail</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter a valid email address to send Auto Scaling event notifications.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Miscellaneous configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Application server port
-(<code>AppServerPort</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the port number on which the web application responds. Barracuda WAF uses this port to connect to the application.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Application server IP address
-(<code>AppServerIP</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the server IP address (inside the VPC) to be configured on the Barracuda WAF. Or, you can enter the fully qualified domain name (FQDM) of the instance or a downstream Elastic Load Balancing (ELB).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default domain
-(<code>DefaultDomain</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>example.com</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the default domain.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server IP address
-(<code>ProxyServerIP</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the IP address of your proxy server.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server port
-(<code>ProxyServerPort</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the port number of your proxy server.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server user name
-(<code>ProxyServerUsername</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the user name for your proxy server. Leave it empty if no user name exists.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server password
-(<code>ProxyServerPassword</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the password for your proxy server. Leave it empty if no password exists.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. WAF nodes configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum number of WAF instances
-(<code>ScalingMinSize</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the minimum number of WAF instances (1-20) available in the Auto Scaling group.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maxium number of WAF instances
-(<code>ScalingMaxSize</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the maximum number of WAF instances (2-20) that can be created in the Auto Scaling group.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. WAF storage configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket for WAF licenses
-(<code>LicenseBucket</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The license directory
-(<code>CudaLicenseSubDir</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the folder name in the S3 bucket that contains the BYOL license file. Leave blank if no folder exists in the bucket. Examples include barracuda/licenses (two-level folder structure) and barracudabyollicenses (one-level folder structure).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bootstrapping subdirectory
-(<code>CudaBackupSubDir</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the folder name in the bootstrapping S3 bucket that contains the backup file. Leave blank if no folder exists for backups on the S3 bucket. Examples include barracuda/wafbackups (two-level folder structure) and barracudawafbackup (one-level folder structure).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bootstrapping S3 bucket
-(<code>BootstrappingS3Bucket</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket that contains backups.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Backup file name
-(<code>BackupFileName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Backup file name that needs to be restored on WAF when it boots up (for example, BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak).</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. AWS Quick Start configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
-(<code>QSS3BucketName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
-(<code>QSS3BucketRegion</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
-(<code>QSS3KeyPrefix</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-barracuda-waf/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a> and <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
 <h3 id="_parameters_for_launching_into_a_new_vpc">Parameters for launching into a new VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. VPC configuration</caption>
+<caption class="title">Table 1. VPC configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1814,7 +1529,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. WAF configuration</caption>
+<caption class="title">Table 2. WAF configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1897,7 +1612,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Administrator configuration</caption>
+<caption class="title">Table 3. Administrator configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1938,7 +1653,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. WAF storage configuration</caption>
+<caption class="title">Table 4. WAF storage configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1977,6 +1692,12 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">The S3 bucket that stores backups.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket deletion policy
+(<code>S3BucketDeletionPolicy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Retain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This sets the bucket deletion policy for the BootStrap, Cluster and AutoScaling buckets that are created as part of the Quick Start.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Backup file name
 (<code>BackupFileName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
@@ -1985,7 +1706,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. AWS Quick Start configuration</caption>
+<caption class="title">Table 5. AWS Quick Start configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -2020,7 +1741,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Proxy configuration</caption>
+<caption class="title">Table 6. Proxy configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -2057,6 +1778,297 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 (<code>ProxyServerPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enter the password for your proxy server. Leave it empty if no password exists.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_parameters_for_launching_into_a_existing_vpc">Parameters for launching into a existing VPC</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Network configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
+(<code>VPCID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of your existing VPC (e.g., vpc-0343606e).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 1 CIDR
+(<code>PrivateSubnet1ACIDR</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/19</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR block for private subnet 1A located in Availability Zone 1.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 2 CIDR
+(<code>PrivateSubnet2ACIDR</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.32.0/19</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR block for private subnet 2A located in Availability Zone 2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet 1 ID
+(<code>PublicSubnet1ID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the public subnet in Availability Zone 1 in your existing VPC (e.g., subnet-a0246dcd).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet 2 ID
+(<code>PublicSubnet2ID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the public subnet in Availability Zone 2 in your existing VPC (e.g., subnet-b1236eea).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. Barracuda WAF EC2 configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key pair name
+(<code>KeyPairName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WAF servers instance type
+(<code>WAFInstanceType</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m4.large</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the instance type to use for this Auto Scaling group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WAF service
+(<code>WAFServiceName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the service name to be configured on the Barracuda WAF.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WAF service port
+(<code>WAFServicePort</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>80</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the service port to be configured on the Barracuda WAF. This port is exposed to the outside world. The default value is 80.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator name
+(<code>AdministratorName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO_DESCRIPTION</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator email address
+(<code>AdministratorEmailID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO_DESCRIPTION</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator company
+(<code>AdministratorCompany</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>None</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">By entering the name, email address, and company (if applicable), you agree to terms and conditions outlined in the product End User License Agreement (<a href="https://www.barracuda.com/legal/software_license_agreement" class="bare">https://www.barracuda.com/legal/software_license_agreement</a>) and Privacy Policy (<a href="https://www.barracuda.com/legal/privacy" class="bare">https://www.barracuda.com/legal/privacy</a>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email for notifications
+(<code>NotificationEmail</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter a valid email address to send Auto Scaling event notifications.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Miscellaneous configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application server port
+(<code>AppServerPort</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the port number on which the web application responds. Barracuda WAF uses this port to connect to the application.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application server IP address
+(<code>AppServerIP</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the server IP address (inside the VPC) to be configured on the Barracuda WAF. Or, you can enter the fully qualified domain name (FQDM) of the instance or a downstream Elastic Load Balancing (ELB).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default domain
+(<code>DefaultDomain</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the default domain.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server IP address
+(<code>ProxyServerIP</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the IP address of your proxy server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server port
+(<code>ProxyServerPort</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the port number of your proxy server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server user name
+(<code>ProxyServerUsername</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the user name for your proxy server. Leave it empty if no user name exists.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy server password
+(<code>ProxyServerPassword</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the password for your proxy server. Leave it empty if no password exists.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. WAF nodes configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum number of WAF instances
+(<code>ScalingMinSize</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the minimum number of WAF instances (1-20) available in the Auto Scaling group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maxium number of WAF instances
+(<code>ScalingMaxSize</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the maximum number of WAF instances (2-20) that can be created in the Auto Scaling group.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. WAF storage configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket for WAF licenses
+(<code>LicenseBucket</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The license directory
+(<code>CudaLicenseSubDir</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the folder name in the S3 bucket that contains the BYOL license file. Leave blank if no folder exists in the bucket. Examples include barracuda/licenses (two-level folder structure) and barracudabyollicenses (one-level folder structure).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bootstrapping subdirectory
+(<code>CudaBackupSubDir</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the folder name in the bootstrapping S3 bucket that contains the backup file. Leave blank if no folder exists for backups on the S3 bucket. Examples include barracuda/wafbackups (two-level folder structure) and barracudawafbackup (one-level folder structure).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket deletion policy
+(<code>S3BucketDeletionPolicy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Retain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This sets the bucket deletion policy for the BootStrap, Cluster and AutoScaling buckets that are created as part of the Quick Start.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bootstrapping S3 bucket
+(<code>BootstrappingS3Bucket</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket that contains backups.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backup file name
+(<code>BackupFileName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backup file name that needs to be restored on WAF when it boots up (for example, BAR-WF-1348428-10.1.0.015-20200803232439-C-Manual_Backup.bak).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. AWS Quick Start configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
+(<code>QSS3BucketName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
+(<code>QSS3BucketRegion</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
+(<code>QSS3KeyPrefix</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-barracuda-waf/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a> and <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
